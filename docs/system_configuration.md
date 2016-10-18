@@ -147,6 +147,9 @@ The default is to use ledis. If Both Redis and Ledis are defined, Redis will tak
 #### RedisHost
 The value of `RedisHost` defines the hostname and port to connect to for redis. 
 
+#### RedisPassword
+The value of `RedisPassword` defines an optinal password to use when connecting to redis
+
 #### LedisDir
 `LedisDir` defines the directory that ledis will store its data in if Ledis is being used instead of Redis. The default is `LedisDir = "ledis_data"`
 
@@ -195,7 +198,7 @@ Ledis Configuration:
 ```
 
 ### OpenTSDBConf
-`OpenTSDBConf` enables an OpenTSDB provider, and also enables OpenTSDB specific functions in the expression language. 
+`OpenTSDBConf` enables an OpenTSDB provider, and also enables OpenTSDB specific functions in the expression language. This also enables the Graph tab in Bosun's UI as that is OpenTSDB specific. However, you can still graph other time series DBs in Bosun's UI by using the Expression tab.
 
 #### Host 
 `Host` specifies the hostname and port to connect to for OpenTSDB.
@@ -216,7 +219,7 @@ This does not cancel the query with OpenTSDB, but bosun will stop processing the
 	ResponseLimit = 25000000
 ```
 
-#### ElasticConf
+### ElasticConf
 `ElasticConf` enables you to query an elastic cluster. The es\* functions become available when this is defined (TODO: Link to the elastic funcs). The functions are designed more to be used for querying log formatted data and stats from those logs. 
 
 The functions that would allow you to use elastic effectively as a time-seris based backend do not currently exist.
@@ -230,6 +233,67 @@ The functions that would allow you to use elastic effectively as a time-seris ba
 	Hosts = ["http://ny-lselastic01.example.com:9200", "http://ny-lselastic02.example.com:9200"]
 ```
 {% endraw %}
+
+### GraphiteConf
+`GraphiteConf` enables you to query a graphite server and makes the graphite query functions available to the expression language.
+
+#### Host
+The host and port to connect to for querying graphite. For example, `Host = "localhost:80"`.
+
+#### GraphiteConf.Headers
+`[GraphiteConf.Headers]` lets you specify headers as key value pairs (one per line) that will be sent with each graphite request.
+
+#### Example
+[GraphiteConf]
+	Host = "localhost:80"
+	[GraphiteConf.Headers]
+		X-Meow = "Mix"
+
+### AnnotateConf
+Embeds the annotation service. This enables the ability to submit and edit annotations via the UI or API. It also enables the annotation related expression functions. Currently the only supported database for annotate is elastic. It can be the same cluster as the one defined in `ElasticConf` or a different one.
+
+#### Hosts
+`Hosts` is a list of hosts that are members of the cluster. It will uses these hosts to discover all the other hosts in the cluster. So you don't have to specify every host in the cluster for Bosun to query it. [This article on Sniffing](https://github.com/olivere/elastic/wiki/Sniffing) describes how this discovery functions.
+
+#### Index
+The elastic index to store annotations in. If not set the default is "annotate".
+
+#### Example
+```
+[AnnotateConf]
+    Hosts = ["http://ny-lselastic01.example.com:9200", "http://ny-lselastic02.example.com:9200"]
+     Index = myAnnotate
+```
+
+### InfluxConf
+This enables the Influx backend and makes the influx query functions available via the API.
+
+#### URL
+`URL` is the the full url that Influx should use to connect to. For example: `URL = "https://myInfluxServer:1234"`
+
+#### Timeout
+Set the timeout for Influx queries. The format of the value is the same as [Go's duration format](https://golang.org/pkg/time/#Duration.String). For example `Timeout = "5m"`
+
+#### UnsafeSSL
+Setting UnsafeSSL to `true` allows you to connect to a influx server even if the https certificate is not validated correctly.
+
+#### Username
+The username to use to connect to influx.
+
+#### Password
+The password to use in combination with the username to connect to Influx.
+
+#### UserAgent
+This specifies the user agent that bosun should identify itself as when querying Influx.
+
+#### Example:
+
+```
+[InfluxConf]
+	URL = "https://myInfluxServer:1234"
+	Timeout = "5m"
+	UnsafeSSL = true
+```
 
 </div>
 </div>
