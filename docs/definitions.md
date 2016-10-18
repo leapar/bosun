@@ -24,10 +24,10 @@ order: 3
 This configuration has been split into two different files. This page documents the various bosun sections thats can be defined. For example alerts, templates, notifications, macros, global variables, and lookups.
 
 ## Definition Configuration File
-All definitions are in a single file that is pointed to in the system configuration (TODO: Make link here to that def). The file is UTF-8 encoded.
+All definitions are in a single file that is pointed to by [the system configuration's RuleFilePath](/system_configuration#rulefilepath). The file is UTF-8 encoded.
 
 ### Syntax
-Syntax is sectional, with each section having a type and a name, followed by `{` and ending with `}`. Each section is a definition (for example, and alert definition or a notification definition. Key/value pairs follow of the form `key = value`. Key names are non-whitespace characters before the `=`. The value goes until end of line and is a string. Multi-line strings are supported using backticks to delimit start and end of string. Comments go from a `#` to end of line (unless the `#` appears in a backtick string). Whitespace is trimmed at ends of values and keys.
+Syntax is sectional, with each section having a type and a name, followed by `{` and ending with `}`. Each section is a definition (for example, and alert definition or a notification definition). Key/value pairs follow of the form `key = value`. Key names are non-whitespace characters before the `=`. The value goes until end of line and is a string. Multi-line strings are supported using backticks (\`) to delimit start and end of string. Comments go from a `#` to end of line (unless the `#` appears in a backtick string). Whitespace is trimmed at ends of values and keys.
 
 ## Alert Definitions
 An alert is defined with the following syntax:
@@ -48,7 +48,7 @@ The minimum requirement for an alert is that it have a `warn` or `crit` expresio
 #### warn
 The expression to evaluate to set a warn state for an incident that is instantiated from the alert definition. 
 
-The expression must evaluate to a NumberSet or a Scalar. 0 is false (do not trigger) and any non-zero value is true (will trigger). 
+The expression must evaluate to a NumberSet or a Scalar (See [Data Types](expressions#data-types)). 0 is false (do not trigger) and any non-zero value is true (will trigger). 
 
 If the crit expression is true, the warn expression will not be evaluated as crit supersedes warn.
 
@@ -62,10 +62,10 @@ As with warn, the expression must return a Scalar or NumberSet.
 No crit notifications will be sent if `critNotification` is not declared in the alert definition. It will still appear on the dashboard.
 
 #### critNotification
-Comma-separated list of notifications to trigger on critical a state (when the crit expression is non-zero). This line may appear multiple times and duplicate notifications, which will be merged so only one of each notification is triggered. Lookup tables may be used when `lookup("table", "key")` is an entire `critNotification` value. See example below.
+Comma-separated list of notifications to trigger on critical a state (when the crit expression is non-zero). This line may appear multiple times and duplicate notifications, which will be merged so only one of each notification is triggered. Lookup tables may be used when `lookup("table", "key")` is an entire `critNotification` value. (TODO: Link to notification lookups).
 
 #### warnNotification
-Identical to critNotification (TODO: Link to above), but for warning states.
+Identical to `critNotification` above, but the condition evaluates to warning state.
 
 #### template
 The name of the template that will be used to send alerts to the specified notifications for the alert.
@@ -100,10 +100,16 @@ Setting `log = true` will make the alert behave as a "log alert". It will never 
 #### maxLogFrequency
 Setting `maxLogFrequency = true` will throttle log notifications to the specified duration. `maxLogFrequency = 5m` will ensure that notifications only fire once every 5 minutes for any given alert key. Only valid on alerts that have `log = true`.
 
-## Variables
-Variables are in the form of `$foo = someText` where someText continues until the end of the line. These are not variables in the sense that they hold a value, rather they are simply text replacement done by the the parsers.
+## Variables 
+Variables are in the form of `$foo = someText` where someText continues until the end of the line. These are not variables in the sense that they hold a value, rather they are simply text replacement done by the the parsers. 
 
-## Global Variables
+They can be referenced by `$foo` or by `${foo}`, the later being useful if you want to use the variable in a context where whitespace does not immedialty follow the value.
+
+### Global Variables
+
+Global Variables exist outside of any section and should be defined before they are used.
+
+Global variables can be overridden in sections defining a variable within the scope of the section that has the same name.
 
 ## Templates 
 Templates are the message body for emails that are sent when an alert is triggered. Syntax is the golang [text/template](http://golang.org/pkg/text/template/) package. Variable expansion is not performed on templates because `$` is used in the template language, but a `V()` function is provided instead. Email bodies are HTML, subjects are plaintext. Macro support is currently disabled for the same reason due to implementation details.
@@ -118,12 +124,12 @@ Note that templates are rendered when the expression is evaluated and it is non-
 The message body. This is formated in HTML (TODO: Unless What? I think always currently, maybe I should link to issue)
 
 #### subject
-The subject of the template. This is also the text that will be used in the dashboard for triggered incidents. 
+The subject of the template. This is also the text that will be used in the dashboard for triggered incidents. The format of the subject is plaintext.
 
 ### Template Variables
 
 #### Ack
-The value of Ack is the URL for the alert acknowledgement. This is generated using the (TODO: link to system configuration variable that sets the hostname).
+The value of Ack is the URL for the alert acknowledgement. This is generated using the [system configuration's Hostname](/system_configuration#hostname) value as the root of the link.
 
 #### Expr 
 The value of Expr is the warn or crit expression that was used to evaluate the alert in the format of a string
@@ -190,6 +196,22 @@ Creates a graph of the expression. It will error if the return type of the expre
 (TODO: Document auto down sampling behavior)
 
 (TODO: Document SVG vs PNG depending on interface vs email) 
+
+### Types available in Templates
+Since templating is based on Go's template language, certain types will be returned. Understanding these types can help you construct richer alert notifications.
+
+#### Event
+An Event contains the following fields
+
+ * Warn: A pointer to a Result that the warn expression generated if the event has a warning Status.
+ * Crit: A pointer to a Result A pointer to a Result that expression generated if the event has a Warn Status
+ * Status: An integer representing the current severity (normal, warning, critical, unknown). As long as it is printed as a string, one will get the textual representation
+ * Time: A [Go time.Time object](https://golang.org/pkg/time/#Time). All the methods you find in Go's documentation attached to time.Time are available in the template
+ * Unevaluated: A boolean value if the alert was unevaluated. Alerts on unevaluated when the current was using `depends` to depend on another alert, and that other alert was non-normal. 
+
+
+
+ (TODO: Example demonstrating using of an Event in a template)
 
 
 
