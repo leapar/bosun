@@ -222,6 +222,8 @@ Creates a graph of the expression. It will error if the return type of the expre
 
 (TODO: Document SVG vs PNG depending on interface vs email) 
 
+
+
 ### Types available in Templates
 Since templating is based on Go's template language, certain types will be returned. Understanding these types can help you construct richer alert notifications.
 
@@ -245,6 +247,50 @@ An Event Result (note: in the code this is actually a models.Result) has two pro
 * **Value**: A float representing the result of the parent expression.
 
 There is a third property **Computations**. But it is not recommended that you access it even though it is available and it will not be documented.
+
+#### ResultSlice and Result
+A `ResultSlice` is returned by using the `.EvalAll` function.  It is a slice of pointers to `Result` objects. Each result represents the an item in the set when the type is something like a NumberSet or a SeriesSet.
+
+A `Result` as two fields:
+
+ 1. **Group**: The Group is the TagSet of the result. 
+ 2. **Value**: The Value of the Result
+
+A tagset is a map of of string to string (`map[string]string` in Go). The keys represent the tag key and their corresponding values are the tag values.
+
+The Value can be of different types. Technically, it is a go `interface{}` with two methods, `Type()` which returns the type of the `Value()` which returns an `interface{}` as well, but will be of the type returned by the `Type()` method.
+
+The most common case of dealing with Results in a ResultSlice is to use the `.EvalAll` func on an expression that would return a NumberSet. The following example shows how you would do that to construct a table.
+
+~~~
+alert example_result_slice {
+    template = example_result_slice
+    # the type returned by the avg() func is a numberSet
+    $cpu_avg = avg(q("sum:rate{counter,,1}:os.cpu{host=ny-bosun*}", "5m", ""))
+    warn = 1
+}
+
+template example_result_slice {
+    body = `
+    <table>
+        <tr>
+            <th>Host</th>
+            <th>Avg CPU Value</th>
+        <tr>
+        {{ range $result := (.EvalAll .Alert.Vars.cpu_avg) }}
+            <tr>
+                <!-- Show the value of the host tag key -->
+                <td>{{$result.Group.host}}</td>
+                <!-- Since we know the value of cpu_avg is a numberSet which contains floats.
+                we pipe the float to printf to make it so it only print to two decimal places -->
+                <td>{{$result.Value | printf "%.2f"}}</td>
+            </tr>
+        {{end}}
+    <table>
+    `
+}
+~~~
+
 
 
 ## Notifications
