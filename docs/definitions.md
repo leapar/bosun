@@ -132,23 +132,48 @@ The subject of the template. This is also the text that will be used in the dash
 The value of Ack is the URL for the alert acknowledgement. This is generated using the [system configuration's Hostname](/system_configuration#hostname) value as the root of the link.
 
 #### Expr 
-The value of Expr is the warn or crit expression that was used to evaluate the alert in the format of a string
+The value of `Expr` is the warn or crit expression that was used to evaluate the alert in the format of a string
 
 #### Group
 A map of tags and their corresponding values for the alert. (TODO: Add Example)
 
-#### History
-The value is an array of events. An Event has a `Status` field (an integer) with a textual string representation; and a `Time` field. Most recent last. The status fields have identification methods: `IsNormal()`, `IsWarning()`, `IsCritical()`, `IsUnknown()`, `IsError()`.
+#### Events
+The value of `Events` is a slice of [Event](http://localhost:4000/definitions#event) objects.
 
-(TODO: Example)
+Example:  
 
-(TODO: Document Event Type)
+~~~
+template test {
+    body = `
+    <table>
+    
+        <tr>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Warn Value</th>
+            <th>Crit Value</th>
+        </tr>
+        
+        {{ range $event := .Events}}
+            <tr>
+                <td>{{ $event.Time }}</td>
+                <td>{{ $event.Status }}</td>
+                <!-- Ensure Warn or Crit are not nil since they are pointers -->
+                <td>{{ if $event.Warn }} {{$event.Warn.Value }} {{ else }} {{ "none" }} {{ end }}</td>
+                <td>{{ if $event.Crit }} {{$event.Crit.Value }} {{ else }} {{ "none" }} {{ end }}</td>
+            </tr>
+        {{ end }}
+    </table>
+    `
+}
+~~~
+
 
 #### Incident 
 The value a URL to the incident view for the incident. The url is based on (TODO: link to systemconf setting )
 
 #### IsEmail
-The value is true if template is being rendered for an email. Needed because email clients often modify HTML.
+The value of is `IsEmail` is true if the template is being rendered for an email. This allows you to use the same template for different types of notifications conditionally within the template.
 
 (TODO: Example)
 
@@ -201,21 +226,17 @@ Creates a graph of the expression. It will error if the return type of the expre
 Since templating is based on Go's template language, certain types will be returned. Understanding these types can help you construct richer alert notifications.
 
 #### Event
-An Event contains the following fields
+An Event represent a change in the [severity state](/usage#severity-states) within the [duration of an incident](/usage#the-lifetime-of-an-incident). When an incident triggers, it will have at least one event.  An Event contains the following fields
 
- * Warn: A pointer to a Result that the warn expression generated if the event has a warning Status.
- * Crit: A pointer to a Result A pointer to a Result that expression generated if the event has a Warn Status
- * Status: An integer representing the current severity (normal, warning, critical, unknown). As long as it is printed as a string, one will get the textual representation
- * Time: A [Go time.Time object](https://golang.org/pkg/time/#Time). All the methods you find in Go's documentation attached to time.Time are available in the template
- * Unevaluated: A boolean value if the alert was unevaluated. Alerts on unevaluated when the current was using `depends` to depend on another alert, and that other alert was non-normal. 
+ * **Warn**: A pointer to a Result that the warn expression generated if the event has a warning Status.
+ * **Crit**: A pointer to a Result A pointer to a Result that expression generated if the event has a Warn Status
+ * **Status**: An integer representing the current severity (normal, warning, critical, unknown). As long as it is printed as a string, one will get the textual representation. The status field has identification methods: `IsNormal()`, `IsWarning()`, `IsCritical()`, `IsUnknown()`, `IsError()` which return a boolean.
+ * **Time**: A [Go time.Time object](https://golang.org/pkg/time/#Time) representing the time of the event. All the methods you find in Go's documentation attached to time.Time are available in the template
+ * **Unevaluated**: A boolean value if the alert was unevaluated. Alerts on unevaluated when the current was using `depends` to depend on another alert, and that other alert was non-normal. 
 
+It is important to note that the `Warn` and `Crit` fields are pointers. So if there was no `Warn` result and you attempt to access a property of `Warn` then you would get a template error at runtime. Therefore when referecing any fields of `Crit` or `Warn` such as `.Crit.Value`, it is vital that you ensure the `Warn` or `Crit` property of the Event is not a nil pointer first.
 
-
- (TODO: Example demonstrating using of an Event in a template)
-
-
-
-
+ See the example under the [Events template variable](/definitions#events) to see how to use events inside a template.
 
 
 
