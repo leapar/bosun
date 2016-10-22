@@ -228,8 +228,8 @@ Since templating is based on Go's template language, certain types will be retur
 #### Event
 An Event represent a change in the [severity state](/usage#severity-states) within the [duration of an incident](/usage#the-lifetime-of-an-incident). When an incident triggers, it will have at least one event.  An Event contains the following fields
 
- * **Warn**: A pointer to a Result that the warn expression generated if the event has a warning Status.
- * **Crit**: A pointer to a Result A pointer to a Result that expression generated if the event has a Warn Status
+ * **Warn**: A pointer to an [Event Result](definitions#event-result) that the warn expression generated if the event has a warning status.
+ * **Crit**: A pointer to an [Event Result](definitions#event-result) if the event has a critical status.
  * **Status**: An integer representing the current severity (normal, warning, critical, unknown). As long as it is printed as a string, one will get the textual representation. The status field has identification methods: `IsNormal()`, `IsWarning()`, `IsCritical()`, `IsUnknown()`, `IsError()` which return a boolean.
  * **Time**: A [Go time.Time object](https://golang.org/pkg/time/#Time) representing the time of the event. All the methods you find in Go's documentation attached to time.Time are available in the template
  * **Unevaluated**: A boolean value if the alert was unevaluated. Alerts on unevaluated when the current was using `depends` to depend on another alert, and that other alert was non-normal. 
@@ -238,6 +238,13 @@ It is important to note that the `Warn` and `Crit` fields are pointers. So if th
 
  See the example under the [Events template variable](/definitions#events) to see how to use events inside a template.
 
+#### Event Result 
+An Event Result (note: in the code this is actually a models.Result) has two properties:
+
+* **Expr**: A string representation of the full expression used to generate the value of the Result's Value.
+* **Value**: A float representing the result of the parent expression.
+
+There is a third property **Computations**. But it is not recommended that you access it even though it is available and it will not be documented.
 
 
 ## Notifications
