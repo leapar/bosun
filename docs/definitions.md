@@ -112,9 +112,13 @@ Global Variables exist outside of any section and should be defined before they 
 Global variables can be overridden in sections defining a variable within the scope of the section that has the same name.
 
 ## Templates 
-Templates are the message body for emails that are sent when an alert is triggered. Syntax is the golang [text/template](http://golang.org/pkg/text/template/) package. Variable expansion is not performed on templates because `$` is used in the template language, but a `V()` function is provided instead. Email bodies are HTML, subjects are plaintext. Macro support is currently disabled for the same reason due to implementation details.
+Templates are used to construct what alerts will look like when they are sent. They are pointed to in the defintion of an alert by the [template keyword](/definitions#template). They are like "views" in web frameworks.
 
-They are pointed to in the definition of an alert (TODO: Link to alert def template keyword).
+Templates in Bosun are built on top of go's templating. The subject is rendered using the golang [text/template](http://golang.org/pkg/text/template/) package and the body is rendered using the golang [html/template](https://golang.org/pkg/html/template/) package.
+
+Variable expansion is not performed on templates because `$` is used in the template language, but a `V()` function is provided instead. Email bodies are HTML, subjects are plaintext.
+
+Macros can not be used in templates, however, templates can reference subtemplates. (TODO: Example of this).
 
 Note that templates are rendered when the expression is evaluated and it is non-normal. This is to eliminate changes in what is presented in the template because the data has changed in the tsdb since the alert was triggered.
 
@@ -191,7 +195,46 @@ The time this alert was last updated
 #### Alert
 Dictionary of rule data (TODO: Document the object properly). Current values don't have documentation
 
-### Alert Functions
+### Template Function Types
+Template functions come in two types. Functions that are global, and context-bound functions. Unfortunately, it is important to understand the difference because they are called differently in functions.
+
+#### Global
+Calling global functions is simple. The syntax is just the function name and arguments. I can be used in regular format or a chained pipe format.
+
+~~~
+template global_type_example {
+    body = `
+        <!-- Regular Format -->
+        {{ bytes 12312313 }}
+        <!-- Pipe Format -->
+        {{ 12312313 | bytes }}
+    `
+}
+~~~
+
+#### Context Bound
+Context bound functions, like Global functions, can be called in regular or pipe format. What makes them different is the syntax used to call them. Context bound functions have a period before them, such as `{{ .Eval }}`. Essentially they are methods on that act on the instance of an alert/template combination when it is rendered and perform queries.
+
+They are bound to the parent context. The "parent context" is essentially the top level namespace within a template. This is because they access data associated with the instance of the template when it sent. 
+
+What this practically means, is that when you are inside a block within a template (for example, inside a range look) context-bound functions need to be called with `{{ $.Func }}` to reference the parent context.
+
+~~~
+template context_bound_type_example {
+    body = `
+        <!-- Context Bound at top level -->
+        {{ .Eval .Alert.Vars.avg_cpu }}
+        
+        <!-- Context Bound in Block -->
+        {{ range $x := .Events }}
+            {{ $.Eval $.Alert.Vars.avg_cpu }}
+        {{ end }}
+    `
+}
+~~~
+
+### Template Functions
+
 
 #### Eval(string|Expression|ResultSlice) (resultValue, error)
 
@@ -214,6 +257,15 @@ Execute the given expression and returns the result.
 (Todo: Document error returns by linking to the error behavior of eval as I believe they are the same)
 
 (TODO: Need to link to possible return types and their structure)
+
+#### LeftJoin(expression|string|ResultSlice?...) ([][]Result, error)
+`LeftJoin` allows you to construct tables from the results of multiple expressions. `LeftJoin` takes two or more expressions that return numberSets as arguments. The function evaluates each expression. It then joins the results of other expressions to the first expression. The join is based on the tag sets of the results. If the tagset is a subset or equal the results of the first expression, it will be joined. 
+
+The output can be though of as a table that is structured as an array of rows, where each row is an array. More technically it is a slice (array | list) of slices that point to [Result](/definitions#result) objects where each result will be a numberSet type.
+
+Example:
+
+
 
 #### Graph(string|Expression|ResultSlice(TODO: Not sure this can take a result slice?))
 Creates a graph of the expression. It will error if the return type of the expression is not a `seriesSet`. 
@@ -248,9 +300,10 @@ An Event Result (note: in the code this is actually a models.Result) has two pro
 
 There is a third property **Computations**. But it is not recommended that you access it even though it is available and it will not be documented.
 
-#### ResultSlice and Result
-A `ResultSlice` is returned by using the `.EvalAll` function.  It is a slice of pointers to `Result` objects. Each result represents the an item in the set when the type is something like a NumberSet or a SeriesSet.
+#### ResultSlice
+A `ResultSlice` is returned by using the `.EvalAll` function. It is a slice of pointers to `Result` objects. Each result represents the an item in the set when the type is something like a NumberSet or a SeriesSet.
 
+#### Result
 A `Result` as two fields:
 
  1. **Group**: The Group is the TagSet of the result. 
