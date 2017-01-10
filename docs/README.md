@@ -9,3 +9,5 @@ gem install jekyll
 gem install jekyll-redirect-from
 jekyll server
 ```
+
+Or, if you have docker installed run docker.sh in this directory.

@@ -295,5 +295,64 @@ This specifies the user agent that bosun should identify itself as when querying
 	UnsafeSSL = true
 ```
 
+### AuthConf
+`AuthConf` configures your bosun authentication settings. If not specified, your bosun instance will have no authentication, and will be open to anybody.
+
+#### CookieSecret
+A secret string used to encrypt cookies bosun sets in client browsers to prevent token forgery. We recommend a longish random string here.
+
+#### TokenSecret
+Supplying this will activate "token authentication", where you can generate api tokens that external apps and services can use to interact with bosun. Should be a long random string.
+
+#### AuthDisabled
+Disable authentication. Set to true to allow any user to access and change bosun. The main use case for using this vs omitting `AuthConf` altogether is setting to true,
+and also enabling token auth to generate tokens before fully activating Authentication.
+
+#### AuthConf.LDAP
+Allows you to configure LDAP authentication for bosun. Subkeys:
+
+#### AuthConf.LDAP.Domain
+LDAP Domain name. 
+
+#### AuthConf.LDAP.LdapAddr
+Host and port of LDAP server
+
+#### AuthConf.LDAP.AllowInsecure
+Set to true to skip certificate validation if you are running self-signed certs, for example.
+
+#### AuthConf.LDAP.DefaultPermission
+Default permissions that will be applied to any user who can authenticate to LDAP.
+
+#### AuthConf.LDAP.RootSearchPath
+Base search path for searching group and user memberships. Not needed if not specifying Group level permissions. Usually just `DC=myOrg,DC=com` is sufficient. 
+
+#### AuthConf.LDAP.Groups
+Allows you to set permission levels per LDAP group. See example for usage.
+
+#### AuthConf.LDAP.Users
+Allows you to grant permissions to individual users. See example for usage.
+
+#### Permissions
+A few places in the config allow you to specify permissions. These fields accept a comma seperated list of roles or permissions. Availible roles and permissions are defined
+[in the bosun source](https://github.com/bosun-monitor/bosun/blob/master/cmd/bosun/web/roles.go#L33). Any of the description values can be used as a permission in the config.
+See example for some examples. If a user matches multiple Group or User permissions, they will have the aggregate of all permissions granted to those groups and users, as well as the defaults.
+
+#### Example:
+```
+[AuthConf]
+  CookieSecret = "MAPpHDIjciqzTg708Ef0AXLeid0o9ghrwKReyj57RPUCk80QffmLvVVHqc4w+A=="
+  TokenSecret =  "hEgeP7DJn0e2RmhOEQLaNItzNN0fm8fWyyX1F3PB3qUbD9859xFxdL1JPLknuQ=="
+  [AuthConf.LDAP]
+    Domain = "mycompany"
+    LdapAddr = "ldap.mycompany.com:3269"
+    DefaultPermission = "Reader"
+    RootSearchPath = "DC=ds,DC=stackexchange,DC=com"
+    [[AuthConf.LDAP.Groups]]
+      Path = "CN=Developers,OU=Security Groups,DC=mycompany,DC=com"
+      Role = "Admin"
+    [AuthConf.LDAP.Users]
+      jSmith = "Actions,Create Annotations,Silence"
+```
+
 </div>
 </div>
