@@ -346,10 +346,13 @@ See example for some examples. If a user matches multiple Group or User permissi
     Domain = "mycompany"
     LdapAddr = "ldap.mycompany.com:3269"
     DefaultPermission = "Reader"
-    RootSearchPath = "DC=ds,DC=stackexchange,DC=com"
+    RootSearchPath = "DC=ds,DC=mycompany,DC=com"
+    [[AuthConf.LDAP.Groups]]
+      Path = "CN=Sysadmins,OU=Security Groups,DC=mycompany,DC=com"
+      Role = "Admin"
     [[AuthConf.LDAP.Groups]]
       Path = "CN=Developers,OU=Security Groups,DC=mycompany,DC=com"
-      Role = "Admin"
+      Role = "Writer"
     [AuthConf.LDAP.Users]
       jSmith = "Actions,Create Annotations,Silence"
 ```
