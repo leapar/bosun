@@ -23,7 +23,6 @@ import (
 	"bosun.org/cmd/bosun/database"
 	"bosun.org/cmd/bosun/ping"
 	"bosun.org/cmd/bosun/sched"
-	"github.com/leapar/bosun/cmd/bosun/web"
 	"bosun.org/collect"
 	"bosun.org/graphite"
 	"bosun.org/metadata"
@@ -31,6 +30,7 @@ import (
 	"bosun.org/slog"
 	"bosun.org/util"
 	"github.com/facebookgo/httpcontrol"
+	"github.com/leapar/bosun/cmd/bosun/web"
 	"gopkg.in/fsnotify.v1"
 )
 
