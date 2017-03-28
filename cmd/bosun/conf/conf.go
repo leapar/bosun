@@ -1,4 +1,4 @@
-package conf // import "https://github.com/leapar/bosun/cmd/bosun/conf"
+package conf // import "github.com/leapar/bosun/cmd/bosun/conf"
 
 import (
 	"bytes"
@@ -14,16 +14,16 @@ import (
 	"github.com/bosun-monitor/annotate"
 	"github.com/influxdata/influxdb/client/v2"
 
-	"https://github.com/leapar/bosun/cmd/bosun/expr"
-	"https://github.com/leapar/bosun/cmd/bosun/expr/parse"
-	"https://github.com/leapar/bosun/graphite"
-	"https://github.com/leapar/bosun/models"
-	"https://github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/cmd/bosun/expr"
+	"github.com/leapar/bosun/cmd/bosun/expr/parse"
+	"github.com/leapar/bosun/graphite"
+	"github.com/leapar/bosun/models"
+	"github.com/leapar/bosun/opentsdb"
 
 	htemplate "html/template"
 	ttemplate "text/template"
 
-	"https://github.com/leapar/bosun/slog"
+	"github.com/leapar/bosun/slog"
 )
 
 // SystemConfProvider providers all the information about the system configuration.

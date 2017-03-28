@@ -7,9 +7,9 @@ import (
 	"net/url"
 	"time"
 
-	"https://github.com/leapar/bosun/cmd/bosun/expr"
-	"https://github.com/leapar/bosun/graphite"
-	"https://github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/cmd/bosun/expr"
+	"github.com/leapar/bosun/graphite"
+	"github.com/leapar/bosun/opentsdb"
 	"github.com/BurntSushi/toml"
 	"github.com/bosun-monitor/annotate"
 	"github.com/influxdata/influxdb/client/v2"

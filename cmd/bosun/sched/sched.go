@@ -1,4 +1,4 @@
-package sched // import "https://github.com/leapar/bosun/cmd/bosun/sched"
+package sched // import "github.com/leapar/bosun/cmd/bosun/sched"
 
 import (
 	"fmt"
@@ -8,15 +8,15 @@ import (
 
 	"golang.org/x/net/context"
 
-	"https://github.com/leapar/bosun/cmd/bosun/cache"
-	"https://github.com/leapar/bosun/cmd/bosun/conf"
-	"https://github.com/leapar/bosun/cmd/bosun/database"
-	"https://github.com/leapar/bosun/cmd/bosun/search"
-	"https://github.com/leapar/bosun/collect"
-	"https://github.com/leapar/bosun/metadata"
-	"https://github.com/leapar/bosun/models"
-	"https://github.com/leapar/bosun/opentsdb"
-	"https://github.com/leapar/bosun/slog"
+	"github.com/leapar/bosun/cmd/bosun/cache"
+	"github.com/leapar/bosun/cmd/bosun/conf"
+	"github.com/leapar/bosun/cmd/bosun/database"
+	"github.com/leapar/bosun/cmd/bosun/search"
+	"github.com/leapar/bosun/collect"
+	"github.com/leapar/bosun/metadata"
+	"github.com/leapar/bosun/models"
+	"github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/slog"
 	"github.com/MiniProfiler/go/miniprofiler"
 	"github.com/bradfitz/slice"
 	"github.com/kylebrandt/boolq"

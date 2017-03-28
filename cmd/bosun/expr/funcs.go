@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"https://github.com/leapar/bosun/cmd/bosun/expr/parse"
-	"https://github.com/leapar/bosun/models"
-	"https://github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/cmd/bosun/expr/parse"
+	"github.com/leapar/bosun/models"
+	"github.com/leapar/bosun/opentsdb"
 	"github.com/GaryBoone/GoStats/stats"
 	"github.com/MiniProfiler/go/miniprofiler"
 	"github.com/jinzhu/now"

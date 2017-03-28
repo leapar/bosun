@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	"https://github.com/leapar/bosun/cmd/bosun/conf"
-	"https://github.com/leapar/bosun/cmd/bosun/conf/rule"
-	"https://github.com/leapar/bosun/models"
-	"https://github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/cmd/bosun/conf"
+	"github.com/leapar/bosun/cmd/bosun/conf/rule"
+	"github.com/leapar/bosun/models"
+	"github.com/leapar/bosun/opentsdb"
 )
 
 func TestCheckFlapping(t *testing.T) {

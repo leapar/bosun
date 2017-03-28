@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"https://github.com/leapar/bosun/cmd/bosun/database/test"
-	"https://github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/cmd/bosun/database/test"
+	"github.com/leapar/bosun/opentsdb"
 )
 
 var testSearch *Search

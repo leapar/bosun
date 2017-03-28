@@ -1,7 +1,7 @@
 package database
 
 import (
-	"https://github.com/leapar/bosun/models"
+	"github.com/leapar/bosun/models"
 	"encoding/json"
 	"fmt"
 	"github.com/garyburd/redigo/redis"

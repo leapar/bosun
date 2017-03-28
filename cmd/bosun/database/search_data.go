@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strconv"
 
-	"https://github.com/leapar/bosun/opentsdb"
-	"https://github.com/leapar/bosun/slog"
-	"https://github.com/leapar/bosun/util"
+	"github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/slog"
+	"github.com/leapar/bosun/util"
 	"github.com/garyburd/redigo/redis"
 )
 

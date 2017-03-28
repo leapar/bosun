@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"https://github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/opentsdb"
 	"github.com/MiniProfiler/go/miniprofiler"
 	"github.com/gorilla/mux"
 )

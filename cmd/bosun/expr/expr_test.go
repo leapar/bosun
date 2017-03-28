@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"https://github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/opentsdb"
 	"github.com/influxdata/influxdb/client/v2"
 )
 

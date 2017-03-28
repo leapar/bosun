@@ -12,13 +12,13 @@ import (
 	"testing"
 	"time"
 
-	"https://github.com/leapar/bosun/cmd/bosun/conf"
-	"https://github.com/leapar/bosun/cmd/bosun/conf/rule"
-	"https://github.com/leapar/bosun/cmd/bosun/database"
-	"https://github.com/leapar/bosun/cmd/bosun/database/test"
-	"https://github.com/leapar/bosun/models"
-	"https://github.com/leapar/bosun/opentsdb"
-	"https://github.com/leapar/bosun/slog"
+	"github.com/leapar/bosun/cmd/bosun/conf"
+	"github.com/leapar/bosun/cmd/bosun/conf/rule"
+	"github.com/leapar/bosun/cmd/bosun/database"
+	"github.com/leapar/bosun/cmd/bosun/database/test"
+	"github.com/leapar/bosun/models"
+	"github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/slog"
 	"github.com/MiniProfiler/go/miniprofiler"
 )
 

@@ -5,9 +5,9 @@ import (
 	"strings"
 	"testing"
 
-	"https://github.com/leapar/bosun/cmd/bosun/conf"
-	"https://github.com/leapar/bosun/cmd/bosun/conf/rule"
-	"https://github.com/leapar/bosun/models"
+	"github.com/leapar/bosun/cmd/bosun/conf"
+	"github.com/leapar/bosun/cmd/bosun/conf/rule"
+	"github.com/leapar/bosun/models"
 )
 
 func TestActionNotificationTemplates(t *testing.T) {

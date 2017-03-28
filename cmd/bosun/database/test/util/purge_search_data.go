@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 
-	"https://github.com/leapar/bosun/cmd/bosun/database"
+	"github.com/leapar/bosun/cmd/bosun/database"
 )
 
 // USAGE: go run purge_search_data.go -r redishost:6379 -m metricIWantToClear

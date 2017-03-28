@@ -8,8 +8,8 @@ import (
 
 	"strings"
 
-	"https://github.com/leapar/bosun/models"
-	"https://github.com/leapar/bosun/slog"
+	"github.com/leapar/bosun/models"
+	"github.com/leapar/bosun/slog"
 	"github.com/garyburd/redigo/redis"
 )
 

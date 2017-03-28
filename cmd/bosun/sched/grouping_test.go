@@ -3,8 +3,8 @@ package sched
 import (
 	"testing"
 
-	"https://github.com/leapar/bosun/models"
-	"https://github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/models"
+	"github.com/leapar/bosun/opentsdb"
 )
 
 func TestGroupSets_Single(t *testing.T) {

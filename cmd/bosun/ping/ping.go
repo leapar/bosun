@@ -1,4 +1,4 @@
-package ping // import "https://github.com/leapar/bosun/cmd/bosun/ping"
+package ping // import "github.com/leapar/bosun/cmd/bosun/ping"
 
 import (
 	"net"
@@ -6,11 +6,11 @@ import (
 
 	fastping "github.com/tatsushid/go-fastping"
 
-	"https://github.com/leapar/bosun/cmd/bosun/search"
-	"https://github.com/leapar/bosun/collect"
-	"https://github.com/leapar/bosun/metadata"
-	"https://github.com/leapar/bosun/opentsdb"
-	"https://github.com/leapar/bosun/slog"
+	"github.com/leapar/bosun/cmd/bosun/search"
+	"github.com/leapar/bosun/collect"
+	"github.com/leapar/bosun/metadata"
+	"github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/slog"
 )
 
 func init() {

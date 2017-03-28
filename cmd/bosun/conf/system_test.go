@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"https://github.com/leapar/bosun/cmd/bosun/expr"
-	"https://github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/cmd/bosun/expr"
+	"github.com/leapar/bosun/opentsdb"
 
 	"github.com/stretchr/testify/assert"
 )

@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"https://github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/opentsdb"
 	"github.com/garyburd/redigo/redis"
 )
 

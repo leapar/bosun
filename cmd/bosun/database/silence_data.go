@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"https://github.com/leapar/bosun/models"
+	"github.com/leapar/bosun/models"
 	"github.com/garyburd/redigo/redis"
 )
 

@@ -1,13 +1,13 @@
-package sched // import "https://github.com/leapar/bosun/cmd/bosun/sched"
+package sched // import "github.com/leapar/bosun/cmd/bosun/sched"
 import (
 	"encoding/json"
 	"fmt"
 	"strconv"
 	"time"
 
-	"https://github.com/leapar/bosun/metadata"
-	"https://github.com/leapar/bosun/opentsdb"
-	"https://github.com/leapar/bosun/slog"
+	"github.com/leapar/bosun/metadata"
+	"github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/slog"
 )
 
 func (s *Schedule) Host(filter string) (map[string]*HostData, error) {

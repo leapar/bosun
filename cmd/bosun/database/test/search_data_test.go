@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"https://github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/opentsdb"
 )
 
 func TestSearch_Metric_RoundTrip(t *testing.T) {

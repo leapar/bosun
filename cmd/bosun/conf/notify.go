@@ -9,11 +9,11 @@ import (
 	"net/smtp"
 	"strings"
 
-	"https://github.com/leapar/bosun/collect"
-	"https://github.com/leapar/bosun/metadata"
-	"https://github.com/leapar/bosun/models"
-	"https://github.com/leapar/bosun/slog"
-	"https://github.com/leapar/bosun/util"
+	"github.com/leapar/bosun/collect"
+	"github.com/leapar/bosun/metadata"
+	"github.com/leapar/bosun/models"
+	"github.com/leapar/bosun/slog"
+	"github.com/leapar/bosun/util"
 	"github.com/jordan-wright/email"
 )
 

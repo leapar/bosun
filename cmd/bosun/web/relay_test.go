@@ -11,10 +11,10 @@ import (
 	"testing"
 	"time"
 
-	"https://github.com/leapar/bosun/cmd/bosun/conf"
-	"https://github.com/leapar/bosun/cmd/bosun/conf/rule"
-	"https://github.com/leapar/bosun/cmd/bosun/database"
-	"https://github.com/leapar/bosun/cmd/bosun/database/test"
+	"github.com/leapar/bosun/cmd/bosun/conf"
+	"github.com/leapar/bosun/cmd/bosun/conf/rule"
+	"github.com/leapar/bosun/cmd/bosun/database"
+	"github.com/leapar/bosun/cmd/bosun/database/test"
 )
 
 var testData database.DataAccess

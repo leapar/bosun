@@ -5,7 +5,7 @@
 // Package parse builds parse trees for expressions as defined by expr. Clients
 // should use that package to construct expressions rather than this one, which
 // provides shared internal data structures not intended for general use.
-package parse // import "https://github.com/leapar/bosun/cmd/bosun/expr/parse"
+package parse // import "github.com/leapar/bosun/cmd/bosun/expr/parse"
 
 import (
 	"fmt"
@@ -14,7 +14,7 @@ import (
 	"strconv"
 	"strings"
 
-	"https://github.com/leapar/bosun/models"
+	"github.com/leapar/bosun/models"
 )
 
 // Tree is the representation of a single parsed expression.

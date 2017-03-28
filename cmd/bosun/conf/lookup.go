@@ -1,9 +1,9 @@
 package conf
 
 import (
-	"https://github.com/leapar/bosun/cmd/bosun/search"
-	"https://github.com/leapar/bosun/models"
-	"https://github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/cmd/bosun/search"
+	"github.com/leapar/bosun/models"
+	"github.com/leapar/bosun/opentsdb"
 )
 
 // TODO: remove this and merge it with Lookup

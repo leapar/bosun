@@ -1,4 +1,4 @@
-package cache // import "https://github.com/leapar/bosun/cmd/bosun/cache"
+package cache // import "github.com/leapar/bosun/cmd/bosun/cache"
 
 import (
 	"sync"

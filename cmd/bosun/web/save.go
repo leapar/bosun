@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"https://github.com/leapar/bosun/cmd/bosun/conf"
+	"github.com/leapar/bosun/cmd/bosun/conf"
 	"github.com/MiniProfiler/go/miniprofiler"
 )
 

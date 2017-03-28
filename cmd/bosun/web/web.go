@@ -1,6 +1,6 @@
 package web
 
-// import "https://github.com/leapar/bosun/cmd/bosun/web"
+// import "github.com/leapar/bosun/cmd/bosun/web"
 
 import (
 	"bytes"
@@ -19,17 +19,17 @@ import (
 	"strings"
 	"time"
 
-	"https://github.com/leapar/bosun/_version"
-	"https://github.com/leapar/bosun/cmd/bosun/conf"
-	"https://github.com/leapar/bosun/cmd/bosun/conf/rule"
-	"https://github.com/leapar/bosun/cmd/bosun/database"
-	"https://github.com/leapar/bosun/cmd/bosun/sched"
-	"https://github.com/leapar/bosun/collect"
-	"https://github.com/leapar/bosun/metadata"
-	"https://github.com/leapar/bosun/models"
-	"https://github.com/leapar/bosun/opentsdb"
-	"https://github.com/leapar/bosun/slog"
-	"https://github.com/leapar/bosun/util"
+	"github.com/leapar/bosun/_version"
+	"github.com/leapar/bosun/cmd/bosun/conf"
+	"github.com/leapar/bosun/cmd/bosun/conf/rule"
+	"github.com/leapar/bosun/cmd/bosun/database"
+	"github.com/leapar/bosun/cmd/bosun/sched"
+	"github.com/leapar/bosun/collect"
+	"github.com/leapar/bosun/metadata"
+	"github.com/leapar/bosun/models"
+	"github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/slog"
+	"github.com/leapar/bosun/util"
 
 	"github.com/MiniProfiler/go/miniprofiler"
 	"github.com/NYTimes/gziphandler"
@@ -884,7 +884,7 @@ func Config(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (inter
 }
 
 func APIRedirect(w http.ResponseWriter, req *http.Request) {
-	http.Redirect(w, req, "http://https://github.com/leapar/bosun/api.html", 302)
+	http.Redirect(w, req, "http://github.com/leapar/bosun/api.html", 302)
 }
 
 func Host(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (interface{}, error) {

@@ -8,9 +8,9 @@ import (
 
 	"math"
 
-	"https://github.com/leapar/bosun/cmd/bosun/expr/parse"
-	"https://github.com/leapar/bosun/models"
-	"https://github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/cmd/bosun/expr/parse"
+	"github.com/leapar/bosun/models"
+	"github.com/leapar/bosun/opentsdb"
 	"github.com/MiniProfiler/go/miniprofiler"
 	"github.com/bosun-monitor/annotate"
 	"github.com/kylebrandt/boolq"

@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"https://github.com/leapar/bosun/models"
+	"github.com/leapar/bosun/models"
 )
 
 func TestNotifications_RoundTrip(t *testing.T) {
