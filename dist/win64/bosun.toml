@@ -73,6 +73,7 @@ SearchSince = "72h"
 # precedence
 [DBConf]
 	RedisHost = "localhost:6379"
+	RedisPassword = "123456"
 	LedisDir = "ledis_data"
 	LedisBindAddr = "127.0.0.1:9565"
 
