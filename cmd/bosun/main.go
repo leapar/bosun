@@ -23,7 +23,7 @@ import (
 	"bosun.org/cmd/bosun/database"
 	"bosun.org/cmd/bosun/ping"
 	"bosun.org/cmd/bosun/sched"
-	"bosun.org/cmd/bosun/web"
+	"github.com/leapar/bosun/cmd/bosun/web"
 	"bosun.org/collect"
 	"bosun.org/graphite"
 	"bosun.org/metadata"
