@@ -4,10 +4,10 @@ import (
 	"reflect"
 	"runtime"
 
-	"https://github.com/leapar/bosun/collect"
-	"https://github.com/leapar/bosun/metadata"
-	"https://github.com/leapar/bosun/opentsdb"
-	"https://github.com/leapar/bosun/util"
+	"github.com/leapar/bosun/collect"
+	"github.com/leapar/bosun/metadata"
+	"github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/util"
 )
 
 /* StreamCollector is useful for collectors that do not produces metrics at a

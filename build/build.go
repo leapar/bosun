@@ -38,7 +38,7 @@ func main() {
 	}
 
 	timeStr := time.Now().UTC().Format("20060102150405")
-	ldFlags := fmt.Sprintf("-X https://github.com/leapar/bosun/_version.VersionSHA=%s -X https://github.com/leapar/bosun/_version.VersionDate=%s", sha, timeStr)
+	ldFlags := fmt.Sprintf("-X github.com/leapar/bosun/_version.VersionSHA=%s -X github.com/leapar/bosun/_version.VersionDate=%s", sha, timeStr)
 
 	progs := allProgs
 	if *buildBosun {
@@ -56,7 +56,7 @@ func main() {
 		} else {
 			args = append(args, "install")
 		}
-		args = append(args, "-ldflags", ldFlags, fmt.Sprintf("https://github.com/leapar/bosun/cmd/%s", app))
+		args = append(args, "-ldflags", ldFlags, fmt.Sprintf("github.com/leapar/bosun/cmd/%s", app))
 		cmd := exec.Command("go", args...)
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr

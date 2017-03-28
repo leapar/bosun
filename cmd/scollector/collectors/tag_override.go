@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"regexp"
 
-	"https://github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/opentsdb"
 )
 
 type TagOverride struct {

@@ -3,7 +3,7 @@
 // using the log package of the standard library, but can easily be used with
 // other logging backends. Thus, we can use syslog on unicies and the event log
 // on windows.
-package slog // import "https://github.com/leapar/bosun/slog"
+package slog // import "github.com/leapar/bosun/slog"
 
 import (
 	"fmt"

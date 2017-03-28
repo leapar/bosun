@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"https://github.com/leapar/bosun/metadata"
-	"https://github.com/leapar/bosun/opentsdb"
-	"https://github.com/leapar/bosun/slog"
+	"github.com/leapar/bosun/metadata"
+	"github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/slog"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"

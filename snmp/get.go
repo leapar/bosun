@@ -3,7 +3,7 @@ package snmp
 import (
 	"fmt"
 
-	"https://github.com/leapar/bosun/snmp/mib"
+	"github.com/leapar/bosun/snmp/mib"
 )
 
 // Get is a wrapper for SNMP.Get.

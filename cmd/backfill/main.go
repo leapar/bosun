@@ -11,9 +11,9 @@ import (
 	"strconv"
 	"time"
 
-	"https://github.com/leapar/bosun/cmd/tsdbrelay/denormalize"
-	"https://github.com/leapar/bosun/collect"
-	"https://github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/cmd/tsdbrelay/denormalize"
+	"github.com/leapar/bosun/collect"
+	"github.com/leapar/bosun/opentsdb"
 )
 
 var (

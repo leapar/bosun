@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"https://github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/opentsdb"
 )
 
 type AlertKey string

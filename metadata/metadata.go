@@ -1,5 +1,5 @@
 // Package metadata provides metadata information between bosun and OpenTSDB.
-package metadata // import "https://github.com/leapar/bosun/metadata"
+package metadata // import "github.com/leapar/bosun/metadata"
 
 import (
 	"bytes"
@@ -11,9 +11,9 @@ import (
 	"sync"
 	"time"
 
-	"https://github.com/leapar/bosun/opentsdb"
-	"https://github.com/leapar/bosun/slog"
-	"https://github.com/leapar/bosun/util"
+	"github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/slog"
+	"github.com/leapar/bosun/util"
 )
 
 // RateType is the type of rate for a metric: gauge, counter, or rate.

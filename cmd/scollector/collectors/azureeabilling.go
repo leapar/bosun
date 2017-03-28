@@ -8,8 +8,8 @@ import (
 
 	"github.com/mhenderson-so/azure-ea-billing"
 
-	"https://github.com/leapar/bosun/metadata"
-	"https://github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/metadata"
+	"github.com/leapar/bosun/opentsdb"
 )
 
 var azBillConf = azureEABillingConfig{}

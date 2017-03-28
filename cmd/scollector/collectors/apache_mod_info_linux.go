@@ -9,8 +9,8 @@ import (
 
 	"golang.org/x/net/html"
 
-	"https://github.com/leapar/bosun/metadata"
-	"https://github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/metadata"
+	"github.com/leapar/bosun/opentsdb"
 )
 
 const (

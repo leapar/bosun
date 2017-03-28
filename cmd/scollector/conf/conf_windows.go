@@ -1,7 +1,7 @@
 package conf
 
 import (
-	"https://github.com/leapar/bosun/slog"
+	"github.com/leapar/bosun/slog"
 	"github.com/StackExchange/wmi"
 )
 

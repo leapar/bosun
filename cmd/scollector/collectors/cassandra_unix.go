@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"strings"
 
-	"https://github.com/leapar/bosun/metadata"
-	"https://github.com/leapar/bosun/opentsdb"
-	"https://github.com/leapar/bosun/util"
+	"github.com/leapar/bosun/metadata"
+	"github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/util"
 )
 
 type MetricSet map[string]string

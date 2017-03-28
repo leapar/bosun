@@ -1,8 +1,8 @@
 // Package conf contains all of the configuration structs for scollector.
-package conf // import "https://github.com/leapar/bosun/cmd/scollector/conf"
+package conf // import "github.com/leapar/bosun/cmd/scollector/conf"
 
 import (
-	"https://github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/opentsdb"
 )
 
 type Conf struct {

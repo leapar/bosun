@@ -7,8 +7,8 @@ import (
 	"net/url"
 	"strings"
 
-	"https://github.com/leapar/bosun/metadata"
-	"https://github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/metadata"
+	"github.com/leapar/bosun/opentsdb"
 )
 
 var (

@@ -7,7 +7,7 @@ import (
 	"net"
 	"time"
 
-	"https://github.com/leapar/bosun/snmp/asn1"
+	"github.com/leapar/bosun/snmp/asn1"
 )
 
 //Timeout is the number of seconds to use for conn.SetReadDeadline

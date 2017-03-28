@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"https://github.com/leapar/bosun/opentsdb"
-	"https://github.com/leapar/bosun/util"
+	"github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/util"
 )
 
 type Silence struct {

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"https://github.com/leapar/bosun/snmp/asn1"
+	"github.com/leapar/bosun/snmp/asn1"
 )
 
 type LookupTest struct {

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"https://github.com/leapar/bosun/cmd/bosun/web"
+	"github.com/leapar/bosun/cmd/bosun/web"
 	"log"
 	"os"
 	"os/exec"
@@ -17,7 +17,7 @@ func main() {
 
 func generateDocImports() {
 	// generate github pages so go-get redirects work.
-	cmd := exec.Command("go", "list", "https://github.com/leapar/bosun...")
+	cmd := exec.Command("go", "list", "github.com/leapar/bosun...")
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Fatal(err)
@@ -25,7 +25,7 @@ func generateDocImports() {
 	lines := strings.Split(string(output), "\n")
 	for _, line := range lines {
 
-		if line == "" || !strings.HasPrefix(line, "https://github.com/leapar/bosun/") {
+		if line == "" || !strings.HasPrefix(line, "github.com/leapar/bosun/") {
 			continue
 		}
 		line = line[10:]

@@ -12,9 +12,9 @@ import (
 
 	analytics "google.golang.org/api/analytics/v3"
 
-	"https://github.com/leapar/bosun/cmd/scollector/conf"
-	"https://github.com/leapar/bosun/metadata"
-	"https://github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/cmd/scollector/conf"
+	"github.com/leapar/bosun/metadata"
+	"github.com/leapar/bosun/opentsdb"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"

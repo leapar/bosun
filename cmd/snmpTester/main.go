@@ -7,8 +7,8 @@ import (
 	"log"
 	"net/http"
 
-	"https://github.com/leapar/bosun/cmd/scollector/collectors"
-	"https://github.com/leapar/bosun/cmd/scollector/conf"
+	"github.com/leapar/bosun/cmd/scollector/collectors"
+	"github.com/leapar/bosun/cmd/scollector/conf"
 	"github.com/BurntSushi/toml"
 )
 

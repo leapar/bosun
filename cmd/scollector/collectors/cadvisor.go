@@ -10,10 +10,10 @@ import (
 	"github.com/google/cadvisor/client"
 	"github.com/google/cadvisor/info/v1"
 
-	"https://github.com/leapar/bosun/cmd/scollector/conf"
-	"https://github.com/leapar/bosun/metadata"
-	"https://github.com/leapar/bosun/opentsdb"
-	"https://github.com/leapar/bosun/slog"
+	"github.com/leapar/bosun/cmd/scollector/conf"
+	"github.com/leapar/bosun/metadata"
+	"github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/slog"
 )
 
 func init() {

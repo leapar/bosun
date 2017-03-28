@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"io"
 
-	"https://github.com/leapar/bosun/snmp/asn1"
-	"https://github.com/leapar/bosun/snmp/mib"
+	"github.com/leapar/bosun/snmp/asn1"
+	"github.com/leapar/bosun/snmp/mib"
 )
 
 // Walk is a wrapper for SNMP.Walk.

@@ -6,10 +6,10 @@ import (
 	"regexp"
 	"strings"
 
-	"https://github.com/leapar/bosun/cmd/scollector/conf"
-	"https://github.com/leapar/bosun/metadata"
-	"https://github.com/leapar/bosun/opentsdb"
-	"https://github.com/leapar/bosun/util"
+	"github.com/leapar/bosun/cmd/scollector/conf"
+	"github.com/leapar/bosun/metadata"
+	"github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/util"
 	"github.com/StackExchange/wmi"
 )
 

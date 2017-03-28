@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"time"
 
-	"https://github.com/leapar/bosun/opentsdb"
-	"https://github.com/leapar/bosun/slog"
+	"github.com/leapar/bosun/opentsdb"
+	"github.com/leapar/bosun/slog"
 	"github.com/garyburd/redigo/redis"
 )
 

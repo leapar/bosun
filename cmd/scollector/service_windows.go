@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
-	"https://github.com/leapar/bosun/_version"
-	"https://github.com/leapar/bosun/slog"
+	"github.com/leapar/bosun/_version"
+	"github.com/leapar/bosun/slog"
 	"golang.org/x/sys/windows/svc"
 	"golang.org/x/sys/windows/svc/debug"
 	"golang.org/x/sys/windows/svc/eventlog"

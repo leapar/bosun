@@ -1,5 +1,5 @@
 // Package opentsdb defines structures for interacting with an OpenTSDB server.
-package opentsdb // import "https://github.com/leapar/bosun/opentsdb"
+package opentsdb // import "github.com/leapar/bosun/opentsdb"
 
 import (
 	"bytes"
@@ -20,7 +20,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"https://github.com/leapar/bosun/slog"
+	"github.com/leapar/bosun/slog"
 )
 
 // ResponseSet is a Multi-Set Response:
