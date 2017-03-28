@@ -180,6 +180,9 @@ func Listen(httpAddr, httpsAddr, certFile, keyFile string, devMode bool, tsdbHos
 	handle("/api/opentsdb/version", JSON(OpenTSDBVersion), fullyOpen).Name("otsdb_version").Methods(GET)
 	handle("/api/annotate", JSON(AnnotateEnabled), fullyOpen).Name("annotate_enabled").Methods(GET)
 
+	handle("/api/v1/metrics", JSON(MetricsTagvTagk), canViewDash).Name("metric_tagk_tagv").Methods(GET)
+	handle("/api/v1/tagsets", JSON(AllTagSets), canViewDash).Name("all_tagk_tagv").Methods(GET)
+
 	// Annotations
 	if schedule.SystemConf.AnnotateEnabled() {
 		index := schedule.SystemConf.GetAnnotateIndex()
@@ -944,4 +947,101 @@ func ErrorHistory(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) 
 		}
 	}
 	return nil, nil
+}
+
+func RemoveDuplicatesAndEmpty(a []string) (ret []string) {
+	a_len := len(a)
+	for i := 0; i < a_len; i++ {
+		if (i > 0 && a[i-1] == a[i]) || len(a[i]) == 0 {
+			continue
+		}
+		ret = append(ret, a[i])
+	}
+	return
+}
+
+func MetricsTagvTagk(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (interface{}, error) {
+	metric := r.FormValue("metric")
+
+	if metric != "" {
+		tagset := opentsdb.TagSet{}
+		tagsets, err := schedule.Search.FilteredTagSets(metric, tagset, int64(0))
+
+		if err != nil {
+			return nil, err
+		}
+
+		return tagsets, nil
+	}
+
+	all := make(map[string][]string)
+
+	metrics, err := schedule.DataAccess.Search().GetAllMetrics()
+	if err != nil {
+		return nil, err
+	}
+	for metric := range metrics {
+		if strings.HasPrefix(metric, "__") || strings.HasPrefix(metric, "bosun") || strings.HasPrefix(metric, "tsdbrelay") {
+			continue
+		}
+		tagset := opentsdb.TagSet{}
+		tagsets, err := schedule.Search.FilteredTagSets(metric, tagset, int64(0))
+		if err != nil {
+			return nil, err
+		}
+
+		datas := []string{}
+
+		for _, tagset := range tagsets {
+			for key, val := range tagset {
+				datas = append(datas, strings.Join([]string{key, ":", val}, ""))
+			}
+
+		}
+		sort.Strings(datas)
+		all[metric] = RemoveDuplicatesAndEmpty(datas)
+	}
+	return all, nil
+}
+
+func AllTagSets(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (interface{}, error) {
+	metric := r.FormValue("metric")
+
+	if metric != "" {
+		tagset := opentsdb.TagSet{}
+		tagsets, err := schedule.Search.FilteredTagSets(metric, tagset, int64(0))
+
+		if err != nil {
+			return nil, err
+		}
+
+		return tagsets, nil
+	}
+
+	all := []string{}
+
+	metrics, err := schedule.DataAccess.Search().GetAllMetrics()
+	if err != nil {
+		return nil, err
+	}
+	for metric := range metrics {
+		if strings.HasPrefix(metric, "__") || strings.HasPrefix(metric, "bosun") || strings.HasPrefix(metric, "tsdbrelay") {
+			continue
+		}
+		tagset := opentsdb.TagSet{}
+		tagsets, err := schedule.Search.FilteredTagSets(metric, tagset, int64(0))
+		if err != nil {
+			return nil, err
+		}
+
+		for _, tagset := range tagsets {
+			for key, val := range tagset {
+				all = append(all, strings.Join([]string{key, ":", val}, ""))
+			}
+		}
+
+	}
+	sort.Strings(all)
+	all = RemoveDuplicatesAndEmpty(all)
+	return all, nil
 }
