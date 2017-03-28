@@ -1,4 +1,4 @@
-package collectors // import "bosun.org/cmd/scollector/collectors"
+package collectors // import "https://github.com/leapar/bosun/cmd/scollector/collectors"
 
 import (
 	"bufio"
@@ -16,11 +16,11 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"bosun.org/cmd/scollector/conf"
-	"bosun.org/metadata"
-	"bosun.org/opentsdb"
-	"bosun.org/slog"
-	"bosun.org/util"
+	"https://github.com/leapar/bosun/cmd/scollector/conf"
+	"https://github.com/leapar/bosun/metadata"
+	"https://github.com/leapar/bosun/opentsdb"
+	"https://github.com/leapar/bosun/slog"
+	"https://github.com/leapar/bosun/util"
 )
 
 var collectors []Collector

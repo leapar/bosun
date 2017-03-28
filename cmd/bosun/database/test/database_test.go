@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"bosun.org/cmd/bosun/database"
+	"https://github.com/leapar/bosun/cmd/bosun/database"
 )
 
 // data access object to use for all unit tests. Pointed at ephemeral ledis, or redis server passed in with --redis=addr

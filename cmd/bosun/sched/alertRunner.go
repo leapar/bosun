@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"bosun.org/cmd/bosun/cache"
-	"bosun.org/cmd/bosun/conf"
-	"bosun.org/slog"
+	"https://github.com/leapar/bosun/cmd/bosun/cache"
+	"https://github.com/leapar/bosun/cmd/bosun/conf"
+	"https://github.com/leapar/bosun/slog"
 )
 
 // Run should be called once (and only once) to start all schedule activity.

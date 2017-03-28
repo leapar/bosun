@@ -1,4 +1,4 @@
-package expr // import "bosun.org/cmd/bosun/expr"
+package expr // import "https://github.com/leapar/bosun/cmd/bosun/expr"
 
 import (
 	"encoding/json"
@@ -10,13 +10,13 @@ import (
 	"sort"
 	"time"
 
-	"bosun.org/cmd/bosun/cache"
-	"bosun.org/cmd/bosun/expr/parse"
-	"bosun.org/cmd/bosun/search"
-	"bosun.org/graphite"
-	"bosun.org/models"
-	"bosun.org/opentsdb"
-	"bosun.org/slog"
+	"https://github.com/leapar/bosun/cmd/bosun/cache"
+	"https://github.com/leapar/bosun/cmd/bosun/expr/parse"
+	"https://github.com/leapar/bosun/cmd/bosun/search"
+	"https://github.com/leapar/bosun/graphite"
+	"https://github.com/leapar/bosun/models"
+	"https://github.com/leapar/bosun/opentsdb"
+	"https://github.com/leapar/bosun/slog"
 	"github.com/MiniProfiler/go/miniprofiler"
 	"github.com/bosun-monitor/annotate"
 	"github.com/influxdata/influxdb/client/v2"

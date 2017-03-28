@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	"bosun.org/metadata"
-	"bosun.org/opentsdb"
-	"bosun.org/util"
+	"https://github.com/leapar/bosun/metadata"
+	"https://github.com/leapar/bosun/opentsdb"
+	"https://github.com/leapar/bosun/util"
 )
 
 func init() {

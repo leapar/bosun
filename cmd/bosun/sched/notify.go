@@ -8,9 +8,9 @@ import (
 	ttemplate "text/template"
 	"time"
 
-	"bosun.org/cmd/bosun/conf"
-	"bosun.org/models"
-	"bosun.org/slog"
+	"https://github.com/leapar/bosun/cmd/bosun/conf"
+	"https://github.com/leapar/bosun/models"
+	"https://github.com/leapar/bosun/slog"
 )
 
 func (s *Schedule) dispatchNotifications() {

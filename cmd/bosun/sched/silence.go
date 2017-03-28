@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"bosun.org/models"
-	"bosun.org/opentsdb"
-	"bosun.org/slog"
+	"https://github.com/leapar/bosun/models"
+	"https://github.com/leapar/bosun/opentsdb"
+	"https://github.com/leapar/bosun/slog"
 )
 
 type SilenceTester func(models.AlertKey) *models.Silence

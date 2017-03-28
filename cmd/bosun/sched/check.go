@@ -5,14 +5,14 @@ import (
 	"math"
 	"time"
 
-	"bosun.org/cmd/bosun/cache"
-	"bosun.org/cmd/bosun/conf"
-	"bosun.org/cmd/bosun/expr"
-	"bosun.org/collect"
-	"bosun.org/metadata"
-	"bosun.org/models"
-	"bosun.org/opentsdb"
-	"bosun.org/slog"
+	"https://github.com/leapar/bosun/cmd/bosun/cache"
+	"https://github.com/leapar/bosun/cmd/bosun/conf"
+	"https://github.com/leapar/bosun/cmd/bosun/expr"
+	"https://github.com/leapar/bosun/collect"
+	"https://github.com/leapar/bosun/metadata"
+	"https://github.com/leapar/bosun/models"
+	"https://github.com/leapar/bosun/opentsdb"
+	"https://github.com/leapar/bosun/slog"
 	"github.com/MiniProfiler/go/miniprofiler"
 )
 

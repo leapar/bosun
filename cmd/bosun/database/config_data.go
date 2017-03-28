@@ -6,7 +6,7 @@ import (
 
 	"github.com/garyburd/redigo/redis"
 
-	"bosun.org/slog"
+	"https://github.com/leapar/bosun/slog"
 )
 
 type ConfigDataAccess interface {

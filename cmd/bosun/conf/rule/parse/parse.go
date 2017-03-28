@@ -6,7 +6,7 @@
 // Clients should use that package to construct configurations rather than this
 // one, which provides shared internal data structures not intended for general
 // use.
-package parse // import "bosun.org/cmd/bosun/conf/rule/parse"
+package parse // import "https://github.com/leapar/bosun/cmd/bosun/conf/rule/parse"
 
 import (
 	"fmt"

@@ -7,8 +7,8 @@ import (
 
 	"github.com/garyburd/redigo/redis"
 
-	"bosun.org/models"
-	"bosun.org/slog"
+	"https://github.com/leapar/bosun/models"
+	"https://github.com/leapar/bosun/slog"
 )
 
 /*

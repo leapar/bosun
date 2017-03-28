@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
-	"bosun.org/cmd/bosun/conf"
-	"bosun.org/models"
-	"bosun.org/opentsdb"
+	"https://github.com/leapar/bosun/cmd/bosun/conf"
+	"https://github.com/leapar/bosun/models"
+	"https://github.com/leapar/bosun/opentsdb"
 	"github.com/ryanuber/go-glob"
 )
 

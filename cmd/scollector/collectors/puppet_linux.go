@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"time"
 
-	"bosun.org/metadata"
-	"bosun.org/opentsdb"
+	"https://github.com/leapar/bosun/metadata"
+	"https://github.com/leapar/bosun/opentsdb"
 	"gopkg.in/yaml.v1"
 )
 

@@ -2,7 +2,7 @@
 //
 // The "collect" namespace is used (i.e., <root>.collect) to collect
 // program and queue metrics.
-package collect // import "bosun.org/collect"
+package collect // import "https://github.com/leapar/bosun/collect"
 
 import (
 	"fmt"
@@ -16,8 +16,8 @@ import (
 	"sync"
 	"time"
 
-	"bosun.org/metadata"
-	"bosun.org/opentsdb"
+	"https://github.com/leapar/bosun/metadata"
+	"https://github.com/leapar/bosun/opentsdb"
 )
 
 var (

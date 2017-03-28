@@ -18,7 +18,7 @@ import (
 
 func main() {
 	id := time.Now().UTC().Format("20060102150405")
-	base := filepath.Join(os.Getenv("GOPATH"), "src", "bosun.org")
+	base := filepath.Join(os.Getenv("GOPATH"), "src", "https://github.com/leapar/bosun")
 	os.Chdir(base)
 	rev, err := exec.Command("git", "rev-parse", "HEAD").Output()
 	if err != nil {

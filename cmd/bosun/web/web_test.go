@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"bosun.org/cmd/bosun/conf"
-	"bosun.org/cmd/bosun/conf/rule"
+	"https://github.com/leapar/bosun/cmd/bosun/conf"
+	"https://github.com/leapar/bosun/cmd/bosun/conf/rule"
 )
 
 func TestErrorTemplate(t *testing.T) {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"bosun.org/opentsdb"
+	"https://github.com/leapar/bosun/opentsdb"
 )
 
 func TestSlowUnion(t *testing.T) {

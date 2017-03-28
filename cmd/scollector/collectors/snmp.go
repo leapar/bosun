@@ -8,11 +8,11 @@ import (
 	"strconv"
 	"strings"
 
-	"bosun.org/cmd/scollector/conf"
-	"bosun.org/metadata"
-	"bosun.org/opentsdb"
-	"bosun.org/slog"
-	"bosun.org/snmp"
+	"https://github.com/leapar/bosun/cmd/scollector/conf"
+	"https://github.com/leapar/bosun/metadata"
+	"https://github.com/leapar/bosun/opentsdb"
+	"https://github.com/leapar/bosun/slog"
+	"https://github.com/leapar/bosun/snmp"
 )
 
 var builtInSNMPs = map[string]func(cfg conf.SNMP){

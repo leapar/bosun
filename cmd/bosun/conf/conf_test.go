@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"testing"
 
-	"bosun.org/opentsdb"
+	"https://github.com/leapar/bosun/opentsdb"
 )
 
 func TestSquelch(t *testing.T) {

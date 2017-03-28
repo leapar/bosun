@@ -3,7 +3,7 @@ package collectors
 import (
 	"testing"
 
-	"bosun.org/opentsdb"
+	"https://github.com/leapar/bosun/opentsdb"
 )
 
 func TestIsDigit(t *testing.T) {

@@ -9,7 +9,7 @@ import (
 	"net/url"
 	"time"
 
-	"bosun.org/slog"
+	"https://github.com/leapar/bosun/slog"
 )
 
 type Client struct {

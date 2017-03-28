@@ -6,10 +6,10 @@ import (
 	"strings"
 	"time"
 
-	"bosun.org/cmd/bosun/expr/parse"
-	"bosun.org/graphite"
-	"bosun.org/models"
-	"bosun.org/opentsdb"
+	"https://github.com/leapar/bosun/cmd/bosun/expr/parse"
+	"https://github.com/leapar/bosun/graphite"
+	"https://github.com/leapar/bosun/models"
+	"https://github.com/leapar/bosun/opentsdb"
 	"github.com/MiniProfiler/go/miniprofiler"
 )
 

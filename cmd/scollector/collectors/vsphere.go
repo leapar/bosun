@@ -9,11 +9,11 @@ import (
 	"strconv"
 	"time"
 
-	"bosun.org/metadata"
-	"bosun.org/opentsdb"
-	"bosun.org/slog"
-	"bosun.org/util"
-	"bosun.org/vsphere"
+	"https://github.com/leapar/bosun/metadata"
+	"https://github.com/leapar/bosun/opentsdb"
+	"https://github.com/leapar/bosun/slog"
+	"https://github.com/leapar/bosun/util"
+	"https://github.com/leapar/bosun/vsphere"
 )
 
 // Vsphere registers a vSphere collector.

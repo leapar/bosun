@@ -13,7 +13,7 @@ import (
 
 	"bytes"
 
-	"bosun.org/util"
+	"https://github.com/leapar/bosun/util"
 )
 
 var (

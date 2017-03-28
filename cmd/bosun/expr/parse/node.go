@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"bosun.org/models"
+	"https://github.com/leapar/bosun/models"
 )
 
 var textFormat = "%s" // Changed to "%q" in tests for better error messages.

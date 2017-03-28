@@ -1,7 +1,7 @@
 package collectors
 
 import (
-	"bosun.org/cmd/scollector/conf"
+	"https://github.com/leapar/bosun/cmd/scollector/conf"
 	"fmt"
 )
 

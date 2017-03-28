@@ -13,18 +13,18 @@ import (
 	"strings"
 	"time"
 
-	"bosun.org/models"
-	"bosun.org/slog"
+	"https://github.com/leapar/bosun/models"
+	"https://github.com/leapar/bosun/slog"
 
 	htemplate "html/template"
 	ttemplate "text/template"
 
-	"bosun.org/cmd/bosun/conf"
-	"bosun.org/cmd/bosun/conf/rule/parse"
-	"bosun.org/cmd/bosun/expr"
-	eparse "bosun.org/cmd/bosun/expr/parse"
+	"https://github.com/leapar/bosun/cmd/bosun/conf"
+	"https://github.com/leapar/bosun/cmd/bosun/conf/rule/parse"
+	"https://github.com/leapar/bosun/cmd/bosun/expr"
+	eparse "https://github.com/leapar/bosun/cmd/bosun/expr/parse"
 
-	"bosun.org/opentsdb"
+	"https://github.com/leapar/bosun/opentsdb"
 	"github.com/MiniProfiler/go/miniprofiler"
 )
 

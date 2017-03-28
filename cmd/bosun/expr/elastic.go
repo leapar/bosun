@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"bosun.org/cmd/bosun/expr/parse"
-	"bosun.org/models"
-	"bosun.org/opentsdb"
+	"https://github.com/leapar/bosun/cmd/bosun/expr/parse"
+	"https://github.com/leapar/bosun/models"
+	"https://github.com/leapar/bosun/opentsdb"
 	"github.com/MiniProfiler/go/miniprofiler"
 	"github.com/jinzhu/now"
 	elastic "gopkg.in/olivere/elastic.v3"

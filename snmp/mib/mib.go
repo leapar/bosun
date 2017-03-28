@@ -9,7 +9,7 @@ import (
 	"strings"
 	"sync"
 
-	"bosun.org/snmp/asn1"
+	"https://github.com/leapar/bosun/snmp/asn1"
 )
 
 var mibDir = ""

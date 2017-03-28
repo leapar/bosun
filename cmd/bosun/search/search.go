@@ -1,4 +1,4 @@
-package search // import "bosun.org/cmd/bosun/search"
+package search // import "https://github.com/leapar/bosun/cmd/bosun/search"
 
 import (
 	"fmt"
@@ -10,11 +10,11 @@ import (
 	"sync"
 	"time"
 
-	"bosun.org/cmd/bosun/database"
-	"bosun.org/collect"
-	"bosun.org/metadata"
-	"bosun.org/opentsdb"
-	"bosun.org/slog"
+	"https://github.com/leapar/bosun/cmd/bosun/database"
+	"https://github.com/leapar/bosun/collect"
+	"https://github.com/leapar/bosun/metadata"
+	"https://github.com/leapar/bosun/opentsdb"
+	"https://github.com/leapar/bosun/slog"
 )
 
 // Search is a struct to hold indexed data about OpenTSDB metric and tag data.

@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"bosun.org/metadata"
-	"bosun.org/opentsdb"
+	"https://github.com/leapar/bosun/metadata"
+	"https://github.com/leapar/bosun/opentsdb"
 )
 
 func init() {

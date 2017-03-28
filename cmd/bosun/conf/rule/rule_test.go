@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"bosun.org/cmd/bosun/conf"
+	"https://github.com/leapar/bosun/cmd/bosun/conf"
 )
 
 func TestPrint(t *testing.T) {

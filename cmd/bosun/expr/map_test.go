@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"bosun.org/opentsdb"
+	"https://github.com/leapar/bosun/opentsdb"
 )
 
 func TestMap(t *testing.T) {

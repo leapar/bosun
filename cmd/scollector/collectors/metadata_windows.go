@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"bosun.org/metadata"
-	"bosun.org/opentsdb"
-	"bosun.org/slog"
+	"https://github.com/leapar/bosun/metadata"
+	"https://github.com/leapar/bosun/opentsdb"
+	"https://github.com/leapar/bosun/slog"
 	"github.com/StackExchange/wmi"
 )
 

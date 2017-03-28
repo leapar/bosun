@@ -1,7 +1,7 @@
 package database
 
 import (
-	"bosun.org/opentsdb"
+	"https://github.com/leapar/bosun/opentsdb"
 )
 
 type MetricMetadata struct {

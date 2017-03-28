@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"testing"
 
-	"bosun.org/models"
+	"https://github.com/leapar/bosun/models"
 )
 
 var debug = flag.Bool("debug", false, "show the errors produced by the main tests")

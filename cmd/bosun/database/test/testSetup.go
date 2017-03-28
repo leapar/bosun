@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"bosun.org/cmd/bosun/database"
+	"https://github.com/leapar/bosun/cmd/bosun/database"
 )
 
 var flagReddisHost = flag.String("redis", "", "redis server to test against")

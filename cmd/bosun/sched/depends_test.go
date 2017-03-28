@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"bosun.org/models"
-	"bosun.org/opentsdb"
+	"https://github.com/leapar/bosun/models"
+	"https://github.com/leapar/bosun/opentsdb"
 )
 
 // Crit returns {a=b},{a=c}, but {a=b} is ignored by dependency expression.

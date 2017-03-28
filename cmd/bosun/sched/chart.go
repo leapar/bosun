@@ -6,7 +6,7 @@ import (
 	"image/png"
 	"io"
 
-	"bosun.org/cmd/bosun/expr"
+	"https://github.com/leapar/bosun/cmd/bosun/expr"
 	"github.com/MiniProfiler/go/miniprofiler"
 	"github.com/ajstarks/svgo"
 	"github.com/bradfitz/slice"

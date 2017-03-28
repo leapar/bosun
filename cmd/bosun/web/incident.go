@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"bosun.org/cmd/bosun/sched"
+	"https://github.com/leapar/bosun/cmd/bosun/sched"
 
 	"github.com/MiniProfiler/go/miniprofiler"
 	"github.com/kylebrandt/boolq"

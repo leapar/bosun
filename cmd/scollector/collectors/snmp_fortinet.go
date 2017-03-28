@@ -5,9 +5,9 @@ import (
 	"strconv"
 	"time"
 
-	"bosun.org/cmd/scollector/conf"
-	"bosun.org/metadata"
-	"bosun.org/opentsdb"
+	"https://github.com/leapar/bosun/cmd/scollector/conf"
+	"https://github.com/leapar/bosun/metadata"
+	"https://github.com/leapar/bosun/opentsdb"
 )
 
 const (

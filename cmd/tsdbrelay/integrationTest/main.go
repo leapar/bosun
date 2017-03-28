@@ -24,9 +24,9 @@ import (
 	"os/signal"
 	"time"
 
-	"bosun.org/metadata"
-	"bosun.org/models"
-	"bosun.org/opentsdb"
+	"https://github.com/leapar/bosun/metadata"
+	"https://github.com/leapar/bosun/models"
+	"https://github.com/leapar/bosun/opentsdb"
 )
 
 var (

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"bosun.org/metadata"
-	"bosun.org/opentsdb"
+	"https://github.com/leapar/bosun/metadata"
+	"https://github.com/leapar/bosun/opentsdb"
 	"github.com/BurntSushi/toml"
 	"github.com/StackExchange/httpunit"
 )

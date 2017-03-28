@@ -3,8 +3,8 @@
 package main
 
 import (
-	"bosun.org/_version"
-	"bosun.org/slog"
+	"https://github.com/leapar/bosun/_version"
+	"https://github.com/leapar/bosun/slog"
 )
 
 func init() {

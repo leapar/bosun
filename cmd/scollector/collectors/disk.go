@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	"bosun.org/metadata"
-	"bosun.org/opentsdb"
+	"https://github.com/leapar/bosun/metadata"
+	"https://github.com/leapar/bosun/opentsdb"
 )
 
 // Check mdadm raid arrays on linux

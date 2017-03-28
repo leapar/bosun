@@ -7,7 +7,7 @@ import (
 	"reflect"
 	"testing"
 
-	"bosun.org/opentsdb"
+	"https://github.com/leapar/bosun/opentsdb"
 )
 
 func TestRmqOverview(t *testing.T) {

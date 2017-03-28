@@ -1,4 +1,4 @@
-package metadata // import "bosun.org/metadata"
+package metadata // import "https://github.com/leapar/bosun/metadata"
 
 type HWDiskMeta struct {
 	Name            string

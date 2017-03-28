@@ -1,5 +1,5 @@
 // Package graphite defines structures for interacting with a Graphite server.
-package graphite // import "bosun.org/graphite"
+package graphite // import "https://github.com/leapar/bosun/graphite"
 
 import (
 	"encoding/json"

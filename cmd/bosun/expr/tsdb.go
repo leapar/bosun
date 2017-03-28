@@ -8,10 +8,10 @@ import (
 	"strconv"
 	"time"
 
-	"bosun.org/cmd/bosun/expr/parse"
-	"bosun.org/models"
-	"bosun.org/opentsdb"
-	"bosun.org/slog"
+	"https://github.com/leapar/bosun/cmd/bosun/expr/parse"
+	"https://github.com/leapar/bosun/models"
+	"https://github.com/leapar/bosun/opentsdb"
+	"https://github.com/leapar/bosun/slog"
 	"github.com/MiniProfiler/go/miniprofiler"
 )
 

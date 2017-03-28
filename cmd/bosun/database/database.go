@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"bosun.org/collect"
-	"bosun.org/metadata"
-	"bosun.org/opentsdb"
+	"https://github.com/leapar/bosun/collect"
+	"https://github.com/leapar/bosun/metadata"
+	"https://github.com/leapar/bosun/opentsdb"
 	"github.com/garyburd/redigo/redis"
 	"github.com/siddontang/ledisdb/config"
 	"github.com/siddontang/ledisdb/server"

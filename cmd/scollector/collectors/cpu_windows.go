@@ -3,8 +3,8 @@ package collectors
 import (
 	"strings"
 
-	"bosun.org/metadata"
-	"bosun.org/opentsdb"
+	"https://github.com/leapar/bosun/metadata"
+	"https://github.com/leapar/bosun/opentsdb"
 	"github.com/StackExchange/wmi"
 )
 

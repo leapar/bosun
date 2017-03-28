@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"bosun.org/slog"
+	"https://github.com/leapar/bosun/slog"
 )
 
 var (

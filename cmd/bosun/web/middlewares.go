@@ -10,9 +10,9 @@ import (
 	"github.com/captncraig/easyauth/providers/token/redisStore"
 	"github.com/gorilla/mux"
 
-	"bosun.org/cmd/bosun/conf"
-	"bosun.org/collect"
-	"bosun.org/opentsdb"
+	"https://github.com/leapar/bosun/cmd/bosun/conf"
+	"https://github.com/leapar/bosun/collect"
+	"https://github.com/leapar/bosun/opentsdb"
 )
 
 // This file contains custom middlewares for bosun. Must match alice.Constructor signature (func(http.Handler) http.Handler)

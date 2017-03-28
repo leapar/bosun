@@ -1,5 +1,5 @@
 // Package util defines utilities for bosun.
-package util // import "bosun.org/util"
+package util // import "https://github.com/leapar/bosun/util"
 
 import (
 	"net"

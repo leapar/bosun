@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"fmt"
 
-	"bosun.org/cmd/bosun/conf"
-	"bosun.org/cmd/bosun/conf/rule/parse"
+	"https://github.com/leapar/bosun/cmd/bosun/conf"
+	"https://github.com/leapar/bosun/cmd/bosun/conf/rule/parse"
 	"github.com/pmezard/go-difflib/difflib"
 )
 

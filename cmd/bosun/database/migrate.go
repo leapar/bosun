@@ -3,8 +3,8 @@ package database
 import (
 	"encoding/json"
 
-	"bosun.org/models"
-	"bosun.org/slog"
+	"https://github.com/leapar/bosun/models"
+	"https://github.com/leapar/bosun/slog"
 	"github.com/garyburd/redigo/redis"
 )
 

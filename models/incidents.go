@@ -5,7 +5,7 @@ import (
 	"math"
 	"time"
 
-	"bosun.org/opentsdb"
+	"https://github.com/leapar/bosun/opentsdb"
 )
 
 type IncidentState struct {

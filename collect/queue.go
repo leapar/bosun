@@ -11,9 +11,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"bosun.org/metadata"
-	"bosun.org/opentsdb"
-	"bosun.org/slog"
+	"https://github.com/leapar/bosun/metadata"
+	"https://github.com/leapar/bosun/opentsdb"
+	"https://github.com/leapar/bosun/slog"
 	"github.com/GROpenSourceDev/go-ntlm-auth/ntlm"
 	"net/http/httptest"
 )

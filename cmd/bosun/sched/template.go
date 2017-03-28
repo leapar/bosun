@@ -13,11 +13,11 @@ import (
 	"strings"
 	"time"
 
-	"bosun.org/cmd/bosun/conf"
-	"bosun.org/cmd/bosun/expr"
-	"bosun.org/models"
-	"bosun.org/opentsdb"
-	"bosun.org/slog"
+	"https://github.com/leapar/bosun/cmd/bosun/conf"
+	"https://github.com/leapar/bosun/cmd/bosun/expr"
+	"https://github.com/leapar/bosun/models"
+	"https://github.com/leapar/bosun/opentsdb"
+	"https://github.com/leapar/bosun/slog"
 	"github.com/aymerick/douceur/inliner"
 	"github.com/jmoiron/jsonq"
 )

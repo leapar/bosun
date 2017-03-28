@@ -15,11 +15,11 @@ import (
 
 	"github.com/facebookgo/httpcontrol"
 
-	version "bosun.org/_version"
+	version "https://github.com/leapar/bosun/_version"
 
-	"bosun.org/opentsdb"
-	"bosun.org/slog"
-	"bosun.org/util"
+	"https://github.com/leapar/bosun/opentsdb"
+	"https://github.com/leapar/bosun/slog"
+	"https://github.com/leapar/bosun/util"
 )
 
 var (

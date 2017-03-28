@@ -5,10 +5,10 @@ import (
 	"regexp"
 	"strings"
 
-	"bosun.org/cmd/scollector/conf"
-	"bosun.org/metadata"
-	"bosun.org/opentsdb"
-	"bosun.org/util"
+	"https://github.com/leapar/bosun/cmd/scollector/conf"
+	"https://github.com/leapar/bosun/metadata"
+	"https://github.com/leapar/bosun/opentsdb"
+	"https://github.com/leapar/bosun/util"
 	"github.com/StackExchange/wmi"
 )
 
