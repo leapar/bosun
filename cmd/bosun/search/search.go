@@ -70,6 +70,7 @@ func (s *Search) Index(mdp opentsdb.MultiDataPoint) {
 				p.LastVal = fv
 			} else {
 				slog.Error(err)
+				slog.Infof("%s %s", dp.Metric, dp.Value)
 			}
 			p.Timestamp = dp.Timestamp
 		}
@@ -95,33 +96,34 @@ func (s *Search) redisIndex(c <-chan *opentsdb.DataPoint) {
 	for dp := range c {
 		now = time.Now().Unix()
 		metric := dp.Metric
+		uid := dp.Tags["uid"]
 		for k, v := range dp.Tags {
 			updateIfTime(fmt.Sprintf("kvm:%s:%s:%s", k, v, metric), func() {
-				if err := s.DataAccess.Search().AddMetricForTag(k, v, metric, now); err != nil {
+				if err := s.DataAccess.Search().AddMetricForTag(k, v, metric, uid, now); err != nil {
 					slog.Error(err)
 				}
-				if err := s.DataAccess.Search().AddTagValue(metric, k, v, now); err != nil {
+				if err := s.DataAccess.Search().AddTagValue(metric, k, v, uid, now); err != nil {
 					slog.Error(err)
 				}
 			})
 			updateIfTime(fmt.Sprintf("mk:%s:%s", metric, k), func() {
-				if err := s.DataAccess.Search().AddTagKeyForMetric(metric, k, now); err != nil {
+				if err := s.DataAccess.Search().AddTagKeyForMetric(metric, k, uid, now); err != nil {
 					slog.Error(err)
 				}
 			})
 			updateIfTime(fmt.Sprintf("kv:%s:%s", k, v), func() {
-				if err := s.DataAccess.Search().AddTagValue(database.Search_All, k, v, now); err != nil {
+				if err := s.DataAccess.Search().AddTagValue(database.Search_All, k, v, uid, now); err != nil {
 					slog.Error(err)
 				}
 			})
 			updateIfTime(fmt.Sprintf("m:%s", metric), func() {
-				if err := s.DataAccess.Search().AddMetric(metric, now); err != nil {
+				if err := s.DataAccess.Search().AddMetric(metric, uid, now); err != nil {
 					slog.Error(err)
 				}
 			})
 		}
 		updateIfTime(fmt.Sprintf("mts:%s:%s", metric, dp.Tags.Tags()), func() {
-			if err := s.DataAccess.Search().AddMetricTagSet(metric, dp.Tags.Tags(), now); err != nil {
+			if err := s.DataAccess.Search().AddMetricTagSet(metric, dp.Tags.Tags(), uid, now); err != nil {
 				slog.Error(err)
 			}
 		})
@@ -230,6 +232,7 @@ func (s *Search) BackupLast() error {
 }
 
 func (s *Search) Expand(q *opentsdb.Query) error {
+	uid := "1"
 	for k, ov := range q.Tags {
 		var nvs []string
 		for _, v := range strings.Split(ov, "|") {
@@ -237,7 +240,7 @@ func (s *Search) Expand(q *opentsdb.Query) error {
 			if v == "*" || !strings.Contains(v, "*") {
 				nvs = append(nvs, v)
 			} else {
-				vs, err := s.TagValuesByMetricTagKey(q.Metric, k, 0)
+				vs, err := s.TagValuesByMetricTagKey(q.Metric, k, uid, 0)
 				if err != nil {
 					return err
 				}
@@ -258,8 +261,8 @@ func (s *Search) Expand(q *opentsdb.Query) error {
 
 // UniqueMetrics returns a sorted slice of metrics where the
 // metric has been updated more recently than epoch
-func (s *Search) UniqueMetrics(epochFilter int64) ([]string, error) {
-	m, err := s.DataAccess.Search().GetAllMetrics()
+func (s *Search) UniqueMetrics(uid string, epochFilter int64) ([]string, error) {
+	m, err := s.DataAccess.Search().GetAllMetrics(uid)
 	if err != nil {
 		return nil, err
 	}
@@ -274,12 +277,12 @@ func (s *Search) UniqueMetrics(epochFilter int64) ([]string, error) {
 	return metrics, nil
 }
 
-func (s *Search) TagValuesByTagKey(Tagk string, since time.Duration) ([]string, error) {
-	return s.TagValuesByMetricTagKey(database.Search_All, Tagk, since)
+func (s *Search) TagValuesByTagKey(Tagk, uid string, since time.Duration) ([]string, error) {
+	return s.TagValuesByMetricTagKey(database.Search_All, Tagk, uid, since)
 }
 
-func (s *Search) MetricsByTagPair(tagk, tagv string) ([]string, error) {
-	metrics, err := s.DataAccess.Search().GetMetricsForTag(tagk, tagv)
+func (s *Search) MetricsByTagPair(tagk, tagv, uid string) ([]string, error) {
+	metrics, err := s.DataAccess.Search().GetMetricsForTag(tagk, tagv, uid)
 	if err != nil {
 		return nil, err
 	}
@@ -291,8 +294,8 @@ func (s *Search) MetricsByTagPair(tagk, tagv string) ([]string, error) {
 	return r, nil
 }
 
-func (s *Search) TagKeysByMetric(metric string) ([]string, error) {
-	keys, err := s.DataAccess.Search().GetTagKeysForMetric(metric)
+func (s *Search) TagKeysByMetric(metric, uid string) ([]string, error) {
+	keys, err := s.DataAccess.Search().GetTagKeysForMetric(metric, uid)
 	if err != nil {
 		return nil, err
 	}
@@ -304,12 +307,12 @@ func (s *Search) TagKeysByMetric(metric string) ([]string, error) {
 	return r, nil
 }
 
-func (s *Search) TagValuesByMetricTagKey(metric, tagK string, since time.Duration) ([]string, error) {
+func (s *Search) TagValuesByMetricTagKey(metric, tagK, uid string, since time.Duration) ([]string, error) {
 	var t int64
 	if since > 0 {
 		t = time.Now().Add(-since).Unix()
 	}
-	vals, err := s.DataAccess.Search().GetTagValues(metric, tagK)
+	vals, err := s.DataAccess.Search().GetTagValues(metric, tagK, uid)
 	if err != nil {
 		return nil, err
 	}
@@ -323,8 +326,8 @@ func (s *Search) TagValuesByMetricTagKey(metric, tagK string, since time.Duratio
 	return r, nil
 }
 
-func (s *Search) FilteredTagSets(metric string, tags opentsdb.TagSet, since int64) ([]opentsdb.TagSet, error) {
-	sets, err := s.DataAccess.Search().GetMetricTagSets(metric, tags)
+func (s *Search) FilteredTagSets(metric, uid string, tags opentsdb.TagSet, since int64) ([]opentsdb.TagSet, error) {
+	sets, err := s.DataAccess.Search().GetMetricTagSets(metric, uid, tags)
 	if err != nil {
 		return nil, err
 	}

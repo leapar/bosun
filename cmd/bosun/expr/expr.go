@@ -10,6 +10,9 @@ import (
 	"sort"
 	"time"
 
+	"github.com/MiniProfiler/go/miniprofiler"
+	"github.com/bosun-monitor/annotate"
+	"github.com/influxdata/influxdb/client/v2"
 	"github.com/leapar/bosun/cmd/bosun/cache"
 	"github.com/leapar/bosun/cmd/bosun/expr/parse"
 	"github.com/leapar/bosun/cmd/bosun/search"
@@ -17,9 +20,6 @@ import (
 	"github.com/leapar/bosun/models"
 	"github.com/leapar/bosun/opentsdb"
 	"github.com/leapar/bosun/slog"
-	"github.com/MiniProfiler/go/miniprofiler"
-	"github.com/bosun-monitor/annotate"
-	"github.com/influxdata/influxdb/client/v2"
 	elasticOld "github.com/olivere/elastic"
 	elastic "gopkg.in/olivere/elastic.v3"
 )

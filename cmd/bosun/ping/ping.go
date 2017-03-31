@@ -26,9 +26,9 @@ const pingFreq = time.Second * 15
 
 // PingHosts pings all hosts that bosun has indexed as recently as the PingDuration
 // provided via the systemConf
-func PingHosts(search *search.Search, duration time.Duration) {
+func PingHosts(search *search.Search, uid string, duration time.Duration) {
 	for range time.Tick(pingFreq) {
-		hosts, err := search.TagValuesByTagKey("host", duration)
+		hosts, err := search.TagValuesByTagKey("host", uid, duration)
 		if err != nil {
 			slog.Error(err)
 			continue

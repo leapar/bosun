@@ -28,7 +28,7 @@ MinGroupSize = 5
 UnknownThreshold = 5
 
 # This makes it so Bosun ping's and records a metric for every value of the "host" tag it has seen. Default is false
-Ping = true
+Ping = false
 
 # How long before hosts stop being pinged if we haven't seen a tagset for that host.Alert. Default is 24 hours
 PingDuration = "24h"
@@ -45,7 +45,7 @@ SearchSince = "72h"
 
 # Configuration to enable the OpenTSDB Backend
 [OpenTSDBConf]
-	Host = "localhost:4243"
+	Host = "172.29.231.177:4243"
 	# Default is 2.1, certain features like filters are enabled when the version is set to 2.2
 	Version = 2.3
 	# ResponseLimit will make requests error if the response from opentsdb is larger than this setting in bytes. Default of 1MB
@@ -73,7 +73,7 @@ SearchSince = "72h"
 # precedence
 [DBConf]
 	RedisHost = "localhost:6379"
-	RedisPassword = "123456"
+	#RedisPassword = "123456"
 	LedisDir = "ledis_data"
 	LedisBindAddr = "127.0.0.1:9565"
 

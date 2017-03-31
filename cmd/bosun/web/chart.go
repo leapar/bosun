@@ -10,16 +10,16 @@ import (
 	"strings"
 	"time"
 
+	"github.com/MiniProfiler/go/miniprofiler"
+	svg "github.com/ajstarks/svgo"
+	"github.com/bradfitz/slice"
+	"github.com/gorilla/mux"
+	"github.com/leapar/annotate"
 	"github.com/leapar/bosun/cmd/bosun/expr"
 	"github.com/leapar/bosun/cmd/bosun/sched"
 	"github.com/leapar/bosun/metadata"
 	"github.com/leapar/bosun/models"
 	"github.com/leapar/bosun/opentsdb"
-	"github.com/MiniProfiler/go/miniprofiler"
-	svg "github.com/ajstarks/svgo"
-	"github.com/bosun-monitor/annotate"
-	"github.com/bradfitz/slice"
-	"github.com/gorilla/mux"
 	"github.com/vdobler/chart"
 	"github.com/vdobler/chart/svgg"
 )
@@ -91,6 +91,7 @@ func Graph(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (interf
 		endT = time.Now().UTC()
 	}
 	m_units := make(map[string]string)
+
 	for i, q := range oreq.Queries {
 		if ar[i] {
 

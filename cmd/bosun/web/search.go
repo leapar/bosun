@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/leapar/bosun/opentsdb"
 	"github.com/MiniProfiler/go/miniprofiler"
 	"github.com/gorilla/mux"
+	"github.com/leapar/bosun/opentsdb"
 )
 
 // UniqueMetrics returns a sorted list of available metrics.
@@ -22,7 +22,8 @@ func UniqueMetrics(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request)
 			serveError(w, fmt.Errorf("could not convert since parameter (expecting epoch value): %v", err))
 		}
 	}
-	values, err := schedule.Search.UniqueMetrics(epoch)
+	uid := r.FormValue("uid")
+	values, err := schedule.Search.UniqueMetrics(uid, epoch)
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +43,8 @@ func UniqueMetrics(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request)
 func TagKeysByMetric(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (interface{}, error) {
 	vars := mux.Vars(r)
 	metric := vars["metric"]
-	return schedule.Search.TagKeysByMetric(metric)
+	uid := r.FormValue("uid")
+	return schedule.Search.TagKeysByMetric(metric, uid)
 }
 
 func TagValuesByMetricTagKey(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (interface{}, error) {
@@ -53,7 +55,8 @@ func TagValuesByMetricTagKey(t miniprofiler.Timer, w http.ResponseWriter, r *htt
 	if err != nil {
 		return nil, err
 	}
-	return schedule.Search.TagValuesByMetricTagKey(metric, tagk, since)
+	uid := r.FormValue("uid")
+	return schedule.Search.TagValuesByMetricTagKey(metric, tagk, uid, since)
 }
 
 func getSince(r *http.Request) (time.Duration, error) {
@@ -90,14 +93,16 @@ func FilteredTagsetsByMetric(t miniprofiler.Timer, w http.ResponseWriter, r *htt
 			return nil, err
 		}
 	}
-	return schedule.Search.FilteredTagSets(metric, tagset, since)
+	uid := r.FormValue("uid")
+	return schedule.Search.FilteredTagSets(metric, uid, tagset, since)
 }
 
 func MetricsByTagPair(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (interface{}, error) {
 	vars := mux.Vars(r)
 	tagk := vars["tagk"]
 	tagv := vars["tagv"]
-	return schedule.Search.MetricsByTagPair(tagk, tagv)
+	uid := r.FormValue("uid")
+	return schedule.Search.MetricsByTagPair(tagk, tagv, uid)
 }
 
 func MetricsByTagKey(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (interface{}, error) {
@@ -107,14 +112,15 @@ func MetricsByTagKey(t miniprofiler.Timer, w http.ResponseWriter, r *http.Reques
 	if err != nil {
 		return nil, err
 	}
-	tagValues, err := schedule.Search.TagValuesByTagKey(tagk, since)
+	uid := r.FormValue("uid")
+	tagValues, err := schedule.Search.TagValuesByTagKey(tagk, uid, since)
 	if err != nil {
 		return nil, err
 	}
 	// map[tagv][metrics...]
 	tagvMetrics := make(map[string][]string)
 	for _, tagv := range tagValues {
-		metrics, err := schedule.Search.MetricsByTagPair(tagk, tagv)
+		metrics, err := schedule.Search.MetricsByTagPair(tagk, tagv, uid)
 		if err != nil {
 			return nil, err
 		}
@@ -130,5 +136,6 @@ func TagValuesByTagKey(t miniprofiler.Timer, w http.ResponseWriter, r *http.Requ
 	if err != nil {
 		return nil, err
 	}
-	return schedule.Search.TagValuesByTagKey(tagk, since)
+	uid := r.FormValue("uid")
+	return schedule.Search.TagValuesByTagKey(tagk, uid, since)
 }

@@ -10,10 +10,10 @@ import (
 	"github.com/leapar/bosun/slog"
 )
 
-func (s *Schedule) Host(filter string) (map[string]*HostData, error) {
+func (s *Schedule) Host(filter, uid string) (map[string]*HostData, error) {
 	timeFilterAge := time.Hour * 2 * 24
 	hosts := make(map[string]*HostData)
-	allHosts, err := s.Search.TagValuesByTagKey("host", timeFilterAge)
+	allHosts, err := s.Search.TagValuesByTagKey("host", uid, timeFilterAge)
 	if err != nil {
 		return nil, err
 	}
@@ -29,7 +29,7 @@ func (s *Schedule) Host(filter string) (map[string]*HostData, error) {
 	// so this makes for the fastest response
 	tagsByKey := func(metric, hostKey string) (map[string][]opentsdb.TagSet, error) {
 		byKey := make(map[string][]opentsdb.TagSet)
-		tags, err := s.Search.FilteredTagSets(metric, nil, 0)
+		tags, err := s.Search.FilteredTagSets(metric, uid, nil, 0)
 		if err != nil {
 			return byKey, err
 		}

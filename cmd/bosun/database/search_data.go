@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/garyburd/redigo/redis"
 	"github.com/leapar/bosun/opentsdb"
 	"github.com/leapar/bosun/slog"
 	"github.com/leapar/bosun/util"
-	"github.com/garyburd/redigo/redis"
 )
 
 /*
@@ -30,38 +30,40 @@ search:mts:{metric} -> all tag sets for a metric. Hash with time stamps
 */
 
 const Search_All = "__all__"
-const searchAllMetricsKey = "search:allMetrics"
 
-func searchMetricKey(tagK, tagV string) string {
-	return fmt.Sprintf("search:metrics:%s=%s", tagK, tagV)
+func searchAllMetricsKey(uid string) string {
+	return fmt.Sprintf("search:allMetrics:%s", uid)
 }
-func searchTagkKey(metric string) string {
-	return fmt.Sprintf("search:tagk:%s", metric)
+func searchMetricKey(tagK, tagV, uid string) string {
+	return fmt.Sprintf("search:metrics:%s:%s=%s", uid, tagK, tagV)
 }
-func searchTagvKey(metric, tagK string) string {
-	return fmt.Sprintf("search:tagv:%s:%s", metric, tagK)
+func searchTagkKey(metric, uid string) string {
+	return fmt.Sprintf("search:tagk:%s:%s", uid, metric)
 }
-func searchMetricTagSetKey(metric string) string {
-	return fmt.Sprintf("search:mts:%s", metric)
+func searchTagvKey(metric, tagK, uid string) string {
+	return fmt.Sprintf("search:tagv:%s:%s:%s", uid, metric, tagK)
+}
+func searchMetricTagSetKey(metric, uid string) string {
+	return fmt.Sprintf("search:mts:%s:%s", uid, metric)
 }
 
 func (d *dataAccess) Search() SearchDataAccess {
 	return d
 }
 
-func (d *dataAccess) AddMetricForTag(tagK, tagV, metric string, time int64) error {
+func (d *dataAccess) AddMetricForTag(tagK, tagV, metric, uid string, time int64) error {
 	conn := d.Get()
 	defer conn.Close()
 
-	_, err := conn.Do("HSET", searchMetricKey(tagK, tagV), metric, time)
+	_, err := conn.Do("HSET", searchMetricKey(tagK, tagV, uid), metric, time)
 	return slog.Wrap(err)
 }
 
-func (d *dataAccess) GetMetricsForTag(tagK, tagV string) (map[string]int64, error) {
+func (d *dataAccess) GetMetricsForTag(tagK, tagV, uid string) (map[string]int64, error) {
 	conn := d.Get()
 	defer conn.Close()
 
-	return stringInt64Map(conn.Do("HGETALL", searchMetricKey(tagK, tagV)))
+	return stringInt64Map(conn.Do("HGETALL", searchMetricKey(tagK, tagV, uid)))
 }
 
 func stringInt64Map(d interface{}, err error) (map[string]int64, error) {
@@ -80,59 +82,59 @@ func stringInt64Map(d interface{}, err error) (map[string]int64, error) {
 	return result, slog.Wrap(err)
 }
 
-func (d *dataAccess) AddTagKeyForMetric(metric, tagK string, time int64) error {
+func (d *dataAccess) AddTagKeyForMetric(metric, tagK, uid string, time int64) error {
 	conn := d.Get()
 	defer conn.Close()
 
-	_, err := conn.Do("HSET", searchTagkKey(metric), tagK, time)
+	_, err := conn.Do("HSET", searchTagkKey(metric, uid), tagK, time)
 	return slog.Wrap(err)
 }
 
-func (d *dataAccess) GetTagKeysForMetric(metric string) (map[string]int64, error) {
+func (d *dataAccess) GetTagKeysForMetric(metric, uid string) (map[string]int64, error) {
 	conn := d.Get()
 	defer conn.Close()
 
-	return stringInt64Map(conn.Do("HGETALL", searchTagkKey(metric)))
+	return stringInt64Map(conn.Do("HGETALL", searchTagkKey(metric, uid)))
 }
 
-func (d *dataAccess) AddMetric(metric string, time int64) error {
+func (d *dataAccess) AddMetric(metric, uid string, time int64) error {
 	conn := d.Get()
 	defer conn.Close()
 
-	_, err := conn.Do("HSET", searchAllMetricsKey, metric, time)
+	_, err := conn.Do("HSET", searchAllMetricsKey(uid), metric, time)
 	return slog.Wrap(err)
 }
-func (d *dataAccess) GetAllMetrics() (map[string]int64, error) {
+func (d *dataAccess) GetAllMetrics(uid string) (map[string]int64, error) {
 	conn := d.Get()
 	defer conn.Close()
 
-	return stringInt64Map(conn.Do("HGETALL", searchAllMetricsKey))
+	return stringInt64Map(conn.Do("HGETALL", searchAllMetricsKey(uid)))
 }
 
-func (d *dataAccess) AddTagValue(metric, tagK, tagV string, time int64) error {
+func (d *dataAccess) AddTagValue(metric, tagK, tagV, uid string, time int64) error {
 	conn := d.Get()
 	defer conn.Close()
 
-	_, err := conn.Do("HSET", searchTagvKey(metric, tagK), tagV, time)
-	return slog.Wrap(err)
-}
-
-func (d *dataAccess) GetTagValues(metric, tagK string) (map[string]int64, error) {
-	conn := d.Get()
-	defer conn.Close()
-
-	return stringInt64Map(conn.Do("HGETALL", searchTagvKey(metric, tagK)))
-}
-
-func (d *dataAccess) AddMetricTagSet(metric, tagSet string, time int64) error {
-	conn := d.Get()
-	defer conn.Close()
-
-	_, err := conn.Do("HSET", searchMetricTagSetKey(metric), tagSet, time)
+	_, err := conn.Do("HSET", searchTagvKey(metric, tagK, uid), tagV, time)
 	return slog.Wrap(err)
 }
 
-func (d *dataAccess) GetMetricTagSets(metric string, tags opentsdb.TagSet) (map[string]int64, error) {
+func (d *dataAccess) GetTagValues(metric, tagK, uid string) (map[string]int64, error) {
+	conn := d.Get()
+	defer conn.Close()
+
+	return stringInt64Map(conn.Do("HGETALL", searchTagvKey(metric, tagK, uid)))
+}
+
+func (d *dataAccess) AddMetricTagSet(metric, tagSet, uid string, time int64) error {
+	conn := d.Get()
+	defer conn.Close()
+
+	_, err := conn.Do("HSET", searchMetricTagSetKey(metric, uid), tagSet, time)
+	return slog.Wrap(err)
+}
+
+func (d *dataAccess) GetMetricTagSets(metric, uid string, tags opentsdb.TagSet) (map[string]int64, error) {
 	conn := d.Get()
 	defer conn.Close()
 
@@ -140,7 +142,7 @@ func (d *dataAccess) GetMetricTagSets(metric string, tags opentsdb.TagSet) (map[
 	result := map[string]int64{}
 
 	for {
-		vals, err := redis.Values(conn.Do(d.HSCAN(), searchMetricTagSetKey(metric), cursor))
+		vals, err := redis.Values(conn.Do(d.HSCAN(), searchMetricTagSetKey(metric, uid), cursor))
 		if err != nil {
 			return nil, slog.Wrap(err)
 		}
@@ -198,27 +200,27 @@ func (d *dataAccess) LoadLastInfos() (map[string]map[string]*LastInfo, error) {
 }
 
 //This function not exposed on any public interface. See cmd/bosun/database/test/util/purge_search_data.go for usage.
-func (d *dataAccess) PurgeSearchData(metric string, noop bool) error {
+func (d *dataAccess) PurgeSearchData(metric, uid string, noop bool) error {
 	conn := d.Get()
 	defer conn.Close()
 
-	tagKeys, err := d.GetTagKeysForMetric(metric)
+	tagKeys, err := d.GetTagKeysForMetric(metric, uid)
 	if err != nil {
 		return err
 	}
 	fmt.Println("HDEL", searchAllMetricsKey)
 	if !noop {
-		_, err = conn.Do("HDEL", searchAllMetricsKey, metric)
+		_, err = conn.Do("HDEL", searchAllMetricsKey(uid), metric)
 		if err != nil {
 			return err
 		}
 	}
 	hashesToDelete := []string{
-		searchMetricTagSetKey(metric),
-		searchTagkKey(metric),
+		searchMetricTagSetKey(metric, uid),
+		searchTagkKey(metric, uid),
 	}
 	for tagk := range tagKeys {
-		hashesToDelete = append(hashesToDelete, searchTagvKey(metric, tagk))
+		hashesToDelete = append(hashesToDelete, searchTagvKey(metric, tagk, uid))
 	}
 	cmd := d.HCLEAR()
 	for _, hash := range hashesToDelete {

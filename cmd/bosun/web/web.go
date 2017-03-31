@@ -33,11 +33,11 @@ import (
 
 	"github.com/MiniProfiler/go/miniprofiler"
 	"github.com/NYTimes/gziphandler"
-	"github.com/bosun-monitor/annotate/backend"
-	"github.com/bosun-monitor/annotate/web"
 	"github.com/captncraig/easyauth"
 	"github.com/gorilla/mux"
 	"github.com/justinas/alice"
+	"github.com/leapar/annotate/backend"
+	"github.com/leapar/annotate/web"
 )
 
 var (
@@ -191,7 +191,7 @@ func Listen(httpAddr, httpsAddr, certFile, keyFile string, devMode bool, tsdbHos
 		if index == "" {
 			index = "annotate"
 		}
-		annotateBackend = backend.NewElastic(schedule.SystemConf.GetAnnotateElasticHosts(), index)
+		annotateBackend = backend.NewElastic(schedule.SystemConf.GetAnnotateElasticHosts(), false, index)
 
 		go func() {
 			for {
@@ -572,12 +572,13 @@ type MetricMetaTagKeys struct {
 
 func MetadataMetrics(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (interface{}, error) {
 	metric := r.FormValue("metric")
+	uid := r.FormValue("uid")
 	if metric != "" {
 		m, err := schedule.MetadataMetrics(metric)
 		if err != nil {
 			return nil, err
 		}
-		keymap, err := schedule.DataAccess.Search().GetTagKeysForMetric(metric)
+		keymap, err := schedule.DataAccess.Search().GetTagKeysForMetric(metric, uid)
 		if err != nil {
 			return nil, err
 		}
@@ -591,7 +592,7 @@ func MetadataMetrics(t miniprofiler.Timer, w http.ResponseWriter, r *http.Reques
 		}, nil
 	}
 	all := make(map[string]*MetricMetaTagKeys)
-	metrics, err := schedule.DataAccess.Search().GetAllMetrics()
+	metrics, err := schedule.DataAccess.Search().GetAllMetrics(uid)
 	if err != nil {
 		return nil, err
 	}
@@ -603,7 +604,7 @@ func MetadataMetrics(t miniprofiler.Timer, w http.ResponseWriter, r *http.Reques
 		if err != nil {
 			return nil, err
 		}
-		keymap, err := schedule.DataAccess.Search().GetTagKeysForMetric(metric)
+		keymap, err := schedule.DataAccess.Search().GetTagKeysForMetric(metric, uid)
 		if err != nil {
 			return nil, err
 		}
@@ -888,7 +889,8 @@ func APIRedirect(w http.ResponseWriter, req *http.Request) {
 }
 
 func Host(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (interface{}, error) {
-	return schedule.Host(r.FormValue("filter"))
+	uid := r.FormValue("uid")
+	return schedule.Host(uid, r.FormValue("filter"))
 }
 
 // Last returns the most recent datapoint for a metric+tagset. The metric+tagset
@@ -964,10 +966,10 @@ func RemoveDuplicatesAndEmpty(a []string) (ret []string) {
 
 func MetricsTagvTagk(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (interface{}, error) {
 	metric := r.FormValue("metric")
-
+	uid := r.FormValue("uid")
 	if metric != "" {
 		tagset := opentsdb.TagSet{}
-		tagsets, err := schedule.Search.FilteredTagSets(metric, tagset, int64(0))
+		tagsets, err := schedule.Search.FilteredTagSets(metric, uid, tagset, int64(0))
 
 		if err != nil {
 			return nil, err
@@ -978,7 +980,7 @@ func MetricsTagvTagk(t miniprofiler.Timer, w http.ResponseWriter, r *http.Reques
 
 	all := make(map[string][]string)
 
-	metrics, err := schedule.DataAccess.Search().GetAllMetrics()
+	metrics, err := schedule.DataAccess.Search().GetAllMetrics(uid)
 	if err != nil {
 		return nil, err
 	}
@@ -987,7 +989,7 @@ func MetricsTagvTagk(t miniprofiler.Timer, w http.ResponseWriter, r *http.Reques
 			continue
 		}
 		tagset := opentsdb.TagSet{}
-		tagsets, err := schedule.Search.FilteredTagSets(metric, tagset, int64(0))
+		tagsets, err := schedule.Search.FilteredTagSets(metric, uid, tagset, int64(0))
 		if err != nil {
 			return nil, err
 		}
@@ -1008,10 +1010,10 @@ func MetricsTagvTagk(t miniprofiler.Timer, w http.ResponseWriter, r *http.Reques
 
 func AllTagSets(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (interface{}, error) {
 	metric := r.FormValue("metric")
-
+	uid := r.FormValue("uid")
 	if metric != "" {
 		tagset := opentsdb.TagSet{}
-		tagsets, err := schedule.Search.FilteredTagSets(metric, tagset, int64(0))
+		tagsets, err := schedule.Search.FilteredTagSets(metric, uid, tagset, int64(0))
 
 		if err != nil {
 			return nil, err
@@ -1022,7 +1024,7 @@ func AllTagSets(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (i
 
 	all := []string{}
 
-	metrics, err := schedule.DataAccess.Search().GetAllMetrics()
+	metrics, err := schedule.DataAccess.Search().GetAllMetrics(uid)
 	if err != nil {
 		return nil, err
 	}
@@ -1031,7 +1033,7 @@ func AllTagSets(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (i
 			continue
 		}
 		tagset := opentsdb.TagSet{}
-		tagsets, err := schedule.Search.FilteredTagSets(metric, tagset, int64(0))
+		tagsets, err := schedule.Search.FilteredTagSets(metric, uid, tagset, int64(0))
 		if err != nil {
 			return nil, err
 		}

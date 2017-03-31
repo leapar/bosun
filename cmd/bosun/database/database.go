@@ -9,10 +9,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/garyburd/redigo/redis"
 	"github.com/leapar/bosun/collect"
 	"github.com/leapar/bosun/metadata"
 	"github.com/leapar/bosun/opentsdb"
-	"github.com/garyburd/redigo/redis"
 	"github.com/siddontang/ledisdb/config"
 	"github.com/siddontang/ledisdb/server"
 
@@ -46,20 +46,20 @@ type MetadataDataAccess interface {
 }
 
 type SearchDataAccess interface {
-	AddMetricForTag(tagK, tagV, metric string, time int64) error
-	GetMetricsForTag(tagK, tagV string) (map[string]int64, error)
+	AddMetricForTag(tagK, tagV, metric, uid string, time int64) error
+	GetMetricsForTag(tagK, tagV, uid string) (map[string]int64, error)
 
-	AddTagKeyForMetric(metric, tagK string, time int64) error
-	GetTagKeysForMetric(metric string) (map[string]int64, error)
+	AddTagKeyForMetric(metric, tagK, uid string, time int64) error
+	GetTagKeysForMetric(metric, uid string) (map[string]int64, error)
 
-	AddMetric(metric string, time int64) error
-	GetAllMetrics() (map[string]int64, error)
+	AddMetric(metric, uid string, time int64) error
+	GetAllMetrics(uid string) (map[string]int64, error)
 
-	AddTagValue(metric, tagK, tagV string, time int64) error
-	GetTagValues(metric, tagK string) (map[string]int64, error)
+	AddTagValue(metric, tagK, tagV, uid string, time int64) error
+	GetTagValues(metric, tagK, uid string) (map[string]int64, error)
 
-	AddMetricTagSet(metric, tagSet string, time int64) error
-	GetMetricTagSets(metric string, tags opentsdb.TagSet) (map[string]int64, error)
+	AddMetricTagSet(metric, tagSet, uid string, time int64) error
+	GetMetricTagSets(metric, uid string, tags opentsdb.TagSet) (map[string]int64, error)
 
 	BackupLastInfos(map[string]map[string]*LastInfo) error
 	LoadLastInfos() (map[string]map[string]*LastInfo, error)

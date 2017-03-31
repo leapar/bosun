@@ -24,8 +24,8 @@ import (
 	"github.com/leapar/bosun/cmd/bosun/expr"
 	eparse "github.com/leapar/bosun/cmd/bosun/expr/parse"
 
-	"github.com/leapar/bosun/opentsdb"
 	"github.com/MiniProfiler/go/miniprofiler"
+	"github.com/leapar/bosun/opentsdb"
 )
 
 type Conf struct {
@@ -875,7 +875,8 @@ func (c *Conf) GetFuncs(backends conf.EnabledBackends) map[string]eparse.Func {
 		var tags []opentsdb.TagSet
 		for _, tag := range lookups.Tags {
 			var next []opentsdb.TagSet
-			vals, err := e.Search.TagValuesByTagKey(tag, 0)
+			uid := "1"
+			vals, err := e.Search.TagValuesByTagKey(tag, uid, 0)
 			if err != nil {
 				return nil, err
 			}
