@@ -8,6 +8,9 @@ import (
 
 	"golang.org/x/net/context"
 
+	"github.com/MiniProfiler/go/miniprofiler"
+	"github.com/bradfitz/slice"
+	"github.com/kylebrandt/boolq"
 	"github.com/leapar/bosun/cmd/bosun/cache"
 	"github.com/leapar/bosun/cmd/bosun/conf"
 	"github.com/leapar/bosun/cmd/bosun/database"
@@ -17,9 +20,6 @@ import (
 	"github.com/leapar/bosun/models"
 	"github.com/leapar/bosun/opentsdb"
 	"github.com/leapar/bosun/slog"
-	"github.com/MiniProfiler/go/miniprofiler"
-	"github.com/bradfitz/slice"
-	"github.com/kylebrandt/boolq"
 )
 
 func utcNow() time.Time {

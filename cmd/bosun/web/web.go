@@ -185,6 +185,8 @@ func Listen(httpAddr, httpsAddr, certFile, keyFile string, devMode bool, tsdbHos
 	handle("/api/v1/metrics", JSON(MetricsTagvTagk), canViewDash).Name("metric_tagk_tagv").Methods(GET)
 	handle("/api/v1/tagsets", JSON(AllTagSets), canViewDash).Name("all_tagk_tagv").Methods(GET)
 
+	handle("/api/host/tag", JSON(HostTag), canViewDash).Name("add_tag_host").Methods(POST)
+
 	// Annotations
 	if schedule.SystemConf.AnnotateEnabled() {
 		index := schedule.SystemConf.GetAnnotateIndex()
@@ -1048,4 +1050,49 @@ func AllTagSets(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (i
 	sort.Strings(all)
 	all = RemoveDuplicatesAndEmpty(all)
 	return all, nil
+}
+
+type RetCode struct {
+	Code    int
+	Message string
+}
+
+func HostTag(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (interface{}, error) {
+	host := r.FormValue("host")
+	uid := r.FormValue("uid")
+	del := r.FormValue("del")
+
+	/*
+		var data []opentsdb.TagSet
+		body, err := ioutil.ReadAll(r.Body)
+		err = json.Unmarshal(body, &data)
+
+		if err != nil {
+			return nil, err
+		}
+		fmt.Println(host, uid, data)
+	*/
+	var errors error
+	if del != "" {
+		d := json.NewDecoder(r.Body)
+		var ms []opentsdb.TagSet
+		if err := d.Decode(&ms); err != nil {
+			return nil, err
+		}
+		errors = schedule.Search.DelHostTag(host, uid, ms)
+	} else {
+
+		d := json.NewDecoder(r.Body)
+		var ms []opentsdb.TagSet
+		if err := d.Decode(&ms); err != nil {
+			return nil, err
+		}
+
+		errors = schedule.Search.AddHostTag(host, uid, ms)
+	}
+
+	var ret RetCode
+	ret.Code = 0
+
+	return ret, errors
 }

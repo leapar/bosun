@@ -9,14 +9,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/captncraig/easyauth/providers/token/redisStore"
 	"github.com/garyburd/redigo/redis"
 	"github.com/leapar/bosun/collect"
 	"github.com/leapar/bosun/metadata"
 	"github.com/leapar/bosun/opentsdb"
 	"github.com/siddontang/ledisdb/config"
 	"github.com/siddontang/ledisdb/server"
-
-	"github.com/captncraig/easyauth/providers/token/redisStore"
 )
 
 var SchemaVersion = int64(1)
@@ -63,6 +62,9 @@ type SearchDataAccess interface {
 
 	BackupLastInfos(map[string]map[string]*LastInfo) error
 	LoadLastInfos() (map[string]map[string]*LastInfo, error)
+
+	AddHostTagSet(host, uid string, tagSet []opentsdb.TagSet) error
+	DelHostTagSet(host, uid string, tagSet []opentsdb.TagSet) error
 }
 
 type dataAccess struct {

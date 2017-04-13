@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/garyburd/redigo/redis"
 	"github.com/leapar/bosun/opentsdb"
@@ -45,6 +46,14 @@ func searchTagvKey(metric, tagK, uid string) string {
 }
 func searchMetricTagSetKey(metric, uid string) string {
 	return fmt.Sprintf("search:mts:%s:%s", uid, metric)
+}
+
+func searchHostTagSetKey(host, uid string) string {
+	return fmt.Sprintf("search:hts:%s:%s", uid, host)
+}
+
+func searchTagSetHostKey(tagK, tagV, uid string) string {
+	return fmt.Sprintf("search:hosts:%s:%s=%s", uid, tagK, tagV)
 }
 
 func (d *dataAccess) Search() SearchDataAccess {
@@ -232,5 +241,53 @@ func (d *dataAccess) PurgeSearchData(metric, uid string, noop bool) error {
 			}
 		}
 	}
+	return nil
+}
+
+func (d *dataAccess) AddHostTagSet(host, uid string, tagSet []opentsdb.TagSet) error {
+	conn := d.Get()
+	defer conn.Close()
+	key := searchHostTagSetKey(host, uid)
+	var args []interface {
+	}
+	now := time.Now().Unix()
+	args = append(args, key)
+	for _, data := range tagSet {
+		for key, value := range data {
+
+			args = append(args, key, value)
+			_, err := conn.Do("HSET", searchTagSetHostKey(key, value, uid), host, now)
+			if err != nil {
+				fmt.Println(err)
+			}
+		}
+	}
+
+	_, err := conn.Do("HMSET", args...)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return slog.Wrap(err)
+}
+
+func (d *dataAccess) DelHostTagSet(host, uid string, tagSet []opentsdb.TagSet) error {
+	conn := d.Get()
+	defer conn.Close()
+
+	for _, data := range tagSet {
+		for key, value := range data {
+			_, err := conn.Do("HDEL", searchHostTagSetKey(host, uid), key)
+			if err != nil {
+				fmt.Println(err)
+			}
+			_, err = conn.Do("HDEL", searchTagSetHostKey(key, value, uid), host)
+			if err != nil {
+				fmt.Println(err)
+			}
+
+		}
+	}
+
 	return nil
 }

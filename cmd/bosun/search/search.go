@@ -344,3 +344,20 @@ func (s *Search) FilteredTagSets(metric, uid string, tags opentsdb.TagSet, since
 	}
 	return r, nil
 }
+
+func (s *Search) AddHostTag(host, uid string, tags []opentsdb.TagSet) error {
+	if err := s.DataAccess.Search().AddHostTagSet(host, uid, tags); err != nil {
+		slog.Error(err)
+		return err
+	}
+	return nil
+
+}
+
+func (s *Search) DelHostTag(host, uid string, tags []opentsdb.TagSet) error {
+	if err := s.DataAccess.Search().DelHostTagSet(host, uid, tags); err != nil {
+		slog.Error(err)
+		return err
+	}
+	return nil
+}
