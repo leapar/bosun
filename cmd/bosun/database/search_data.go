@@ -256,10 +256,37 @@ func (d *dataAccess) AddHostTagSet(host, uid string, tagSet []opentsdb.TagSet) e
 		for key, value := range data {
 
 			args = append(args, key, value)
+			oldValue, err2 := redis.String(conn.Do("HGET", searchHostTagSetKey(host, uid),key))
+
+			if err2 != nil {
+				fmt.Println(err2)
+			} else {
+				if oldValue != value  {
+					keys, err3 := stringInt64Map(conn.Do("HGETALL", searchTagSetHostKey(key, oldValue, uid)))
+
+					if err3 != nil {
+						fmt.Println(err3)
+					} else {
+						delete(keys,host)
+						if len(keys) == 0 {
+							_, err := conn.Do("DEL", searchTagSetHostKey(key, oldValue, uid))
+							if err != nil {
+								fmt.Println(err)
+							}
+						}
+					}
+				}
+
+
+			}
+
 			_, err := conn.Do("HSET", searchTagSetHostKey(key, value, uid), host, now)
 			if err != nil {
 				fmt.Println(err)
 			}
+
+
+
 		}
 	}
 
@@ -286,6 +313,18 @@ func (d *dataAccess) DelHostTagSet(host, uid string, tagSet []opentsdb.TagSet) e
 				fmt.Println(err)
 			}
 
+			keys, err2 := stringInt64Map(conn.Do("HGETALL", searchTagSetHostKey(key, value, uid)))
+
+			if err2 != nil {
+				fmt.Println(err2)
+			} else {
+				if len(keys) == 0 {
+					_, err = conn.Do("DEL", searchTagSetHostKey(key, value, uid))
+					if err != nil {
+						fmt.Println(err)
+					}
+				}
+			}
 		}
 	}
 
