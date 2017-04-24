@@ -1,2 +1,2 @@
-nohup ./tsdbrelay -b localhost:8101 -t localhost:4243 > tsdbrelay.log 2>&1 &
+nohup ./tsdbrelay -b localhost:8101 -t 192.168.1.201:4242 > tsdbrelay.log 2>&1 &
 
