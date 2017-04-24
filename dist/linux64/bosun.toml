@@ -5,7 +5,7 @@
 Hostname = "apmsys.com"
 
 # The HTTP IP and Port to Listen on. Default is ":8070"
-HTTPListen = ":8010"
+HTTPListen = ":8101"
 
 # Alert checks are run by default every CheckFrequency * DefaultRunEvery. RunEvery can be overridden
 # by indivdual alerts. Defaults are "5m" and 1
@@ -72,9 +72,10 @@ SearchSince = "72h"
 # for production setups. Defaults for ledis are below but would be ignored since redis takes
 # precedence
 [DBConf]
-	RedisHost = "localhost:6379"
-	LedisDir = "ledis_data"
-	LedisBindAddr = "127.0.0.1:9565"
+	RedisHost = "192.168.1.201 :6379"
+	# RedisPassword = "123456"
+    # LedisDir = "ledis_data"
+	# LedisBindAddr = "127.0.0.1:9565"
 
 # Configuration to enable Bosun to be able to send email notifications
 [SMTPConf]
