@@ -143,6 +143,7 @@ func main() {
 		intake:   piServer + "/intake",
 		series:   piServer + "/api/v1/series",
 		checkRun: piServer + "/api/v1/check_run",
+		snmp:     piServer,
 	}
 
 	piProxy := util.NewSingleHostProxy(&url.URL{
@@ -223,7 +224,7 @@ var (
 )
 
 func (rp *relayProxy) relayPut(responseWriter http.ResponseWriter, r *http.Request, flag int, parse bool) {
-	slog.Infoln("relayPut")
+	//slog.Infoln("relayPut")
 	reader := &passthru{ReadCloser: r.Body}
 	r.Body = reader
 
@@ -237,7 +238,7 @@ func (rp *relayProxy) relayPut(responseWriter http.ResponseWriter, r *http.Reque
 			verbose("relayPut got status %d", w.code)
 			return
 		}*/
-	verbose("relayed to piServer")
+	//verbose("relayed to piServer")
 	responseWriter.Write([]byte("{\"status\":\"ok2\"}"))
 
 	// Send to bosun in a separate go routine so we can end the source's request.
@@ -256,16 +257,15 @@ func (rp *relayProxy) relayPut(responseWriter http.ResponseWriter, r *http.Reque
 		case 3:
 			url = piServerInfo.checkRun
 			break
-			
+		case 4:
+			url = piServerInfo.snmp + r.URL.Path
 		}
 
-		if len(r.URL.RawQuery) > 0 && len(url) > 0 {
+		if len(r.URL.RawQuery) > 0 {
 			url += "?" + r.URL.RawQuery
 		}
-		
-		if len(url) == 0 {
-			url = r.URL.String()
-		}
+
+		//verbose(url)
 
 		req, err := http.NewRequest(r.Method, url, body)
 		if err != nil {
@@ -300,7 +300,7 @@ func (rp *relayProxy) relayPut(responseWriter http.ResponseWriter, r *http.Reque
 			return
 		}
 		resp.Body.Close()
-		verbose("pi relay success")
+		//verbose("pi relay success")
 	}()
 
 	go func() {
@@ -319,7 +319,7 @@ func (rp *relayProxy) relayPut(responseWriter http.ResponseWriter, r *http.Reque
 			break
 		}
 		if len(url) == 0 {
-			return;
+			return
 		}
 
 		req, err := http.NewRequest(r.Method, url, body)
@@ -353,7 +353,7 @@ func (rp *relayProxy) relayPut(responseWriter http.ResponseWriter, r *http.Reque
 			return
 		}
 		resp.Body.Close()
-		verbose("ci relay success")
+		//verbose("ci relay success")
 	}()
 
 	go func() {
@@ -373,7 +373,7 @@ func (rp *relayProxy) relayPut(responseWriter http.ResponseWriter, r *http.Reque
 		}
 
 		if len(url) == 0 {
-			return;
+			return
 		}
 
 		req, err := http.NewRequest(r.Method, url, body)
@@ -409,7 +409,7 @@ func (rp *relayProxy) relayPut(responseWriter http.ResponseWriter, r *http.Reque
 			return
 		}
 		resp.Body.Close()
-		verbose("datadog relay success")
+		//verbose("datadog relay success")
 	}()
 
 	r.Close = true
