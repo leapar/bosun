@@ -47,6 +47,7 @@ type ServerInfo struct {
 	intake   string
 	series   string
 	checkRun string
+	snmp     string
 }
 
 type tsdbrelayHTTPTransport struct {
@@ -169,6 +170,12 @@ func main() {
 		//w.Write([]byte("{\"status\":\"ok2\"}"))
 	})
 
+	http.HandleFunc("/snmp/v1/", func(w http.ResponseWriter, r *http.Request) {
+		rp.relayPut(w, r, 4, true)
+		//w.WriteHeader(200)
+		//w.Write([]byte("{\"status\":\"ok2\"}"))
+	})
+
 	//http.Handle("/", piProxy)
 
 	slog.Fatal(http.ListenAndServe(listenAddr, nil))
@@ -249,10 +256,15 @@ func (rp *relayProxy) relayPut(responseWriter http.ResponseWriter, r *http.Reque
 		case 3:
 			url = piServerInfo.checkRun
 			break
+			
 		}
 
-		if len(r.URL.RawQuery) > 0 {
+		if len(r.URL.RawQuery) > 0 && len(url) > 0 {
 			url += "?" + r.URL.RawQuery
+		}
+		
+		if len(url) == 0 {
+			url = r.URL.String()
 		}
 
 		req, err := http.NewRequest(r.Method, url, body)
@@ -306,6 +318,9 @@ func (rp *relayProxy) relayPut(responseWriter http.ResponseWriter, r *http.Reque
 			url = ciServerInfo.checkRun
 			break
 		}
+		if len(url) == 0 {
+			return;
+		}
 
 		req, err := http.NewRequest(r.Method, url, body)
 		if err != nil {
@@ -355,6 +370,10 @@ func (rp *relayProxy) relayPut(responseWriter http.ResponseWriter, r *http.Reque
 		case 3:
 			url = ddServerInfo.checkRun
 			break
+		}
+
+		if len(url) == 0 {
+			return;
 		}
 
 		req, err := http.NewRequest(r.Method, url, body)
