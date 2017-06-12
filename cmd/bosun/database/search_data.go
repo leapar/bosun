@@ -250,7 +250,7 @@ func (d *dataAccess) AddHostTagSet(host, uid string, tagSet []opentsdb.TagSet) e
 	key := searchHostTagSetKey(host, uid)
 	var args []interface {
 	}
-	now := time.Now().Unix()
+
 	args = append(args, key)
 	for _, data := range tagSet {
 		for key, value := range data {
@@ -279,7 +279,7 @@ func (d *dataAccess) AddHostTagSet(host, uid string, tagSet []opentsdb.TagSet) e
 
 
 			}
-
+			now := time.Now().UnixNano()
 			_, err := conn.Do("HSET", searchTagSetHostKey(key, value, uid), host, now)
 			if err != nil {
 				fmt.Println(err)
