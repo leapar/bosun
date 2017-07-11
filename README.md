@@ -4,6 +4,16 @@ Bosun is a time series alerting framework developed by Stack Exchange. Scollecto
 
 [![Build Status](https://travis-ci.org/bosun-monitor/bosun.svg?branch=master)](https://travis-ci.org/bosun-monitor/bosun)
 
+
+## docker
+
+```shell
+docker run --rm -v `pwd`:/tmp frolvlad/alpine-go go /tmp/cmd/bosun/main.go
+
+
+```
+
+
 ## building
 
 To build bosun and scollector, clone to `$GOPATH/src/bosun.org`:
