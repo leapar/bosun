@@ -12,9 +12,9 @@ import (
 
 	"github.com/MiniProfiler/go/miniprofiler"
 	svg "github.com/ajstarks/svgo"
+	"github.com/leapar/annotate"
 	"github.com/bradfitz/slice"
 	"github.com/gorilla/mux"
-	"github.com/leapar/annotate"
 	"github.com/leapar/bosun/cmd/bosun/expr"
 	"github.com/leapar/bosun/cmd/bosun/sched"
 	"github.com/leapar/bosun/metadata"
@@ -91,7 +91,6 @@ func Graph(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (interf
 		endT = time.Now().UTC()
 	}
 	m_units := make(map[string]string)
-
 	for i, q := range oreq.Queries {
 		if ar[i] {
 
@@ -185,7 +184,7 @@ func Graph(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (interf
 	var a []annotate.Annotation
 	warnings := []string{}
 	if schedule.SystemConf.AnnotateEnabled() {
-		a, err = annotateBackend.GetAnnotations(&startT, &endT)
+		a, err = AnnotateBackend.GetAnnotations(&startT, &endT)
 		if err != nil {
 			warnings = append(warnings, fmt.Sprintf("unable to get annotations: %v", err))
 		}
@@ -246,11 +245,11 @@ func ExprGraph(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (in
 		InfluxConfig:    schedule.SystemConf.GetInfluxContext(),
 		LogstashHosts:   schedule.SystemConf.GetLogstashContext(),
 		ElasticHosts:    schedule.SystemConf.GetElasticContext(),
-		AnnotateContext: schedule.SystemConf.GetAnnotateContext(),
 	}
 	providers := &expr.BosunProviders{
 		Cache:     cacheObj,
 		Search:    schedule.Search,
+		Annotate:  AnnotateBackend,
 		Squelched: nil,
 		History:   nil,
 	}

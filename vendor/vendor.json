@@ -260,19 +260,22 @@
 			"revisionTime": "2015-11-22T20:06:43-07:00"
 		},
 		{
+			"checksumSHA1": "jx1hiVjE68LP+EMqgSiOJ5udPCQ=",
 			"path": "github.com/bosun-monitor/annotate",
-			"revision": "7a63972472cdcbd52933b5580927efca995e4598",
-			"revisionTime": "2016-10-19T16:13:39-06:00"
+			"revision": "c0740ed2ddc60564a6aff2ad44fb375b479e55ca",
+			"revisionTime": "2017-03-27T16:30:27-04:00"
 		},
 		{
+			"checksumSHA1": "/N7Fn2S5O4gcqloH5fdkGzJ3Gas=",
 			"path": "github.com/bosun-monitor/annotate/backend",
-			"revision": "7a63972472cdcbd52933b5580927efca995e4598",
-			"revisionTime": "2016-10-19T16:13:39-06:00"
+			"revision": "c0740ed2ddc60564a6aff2ad44fb375b479e55ca",
+			"revisionTime": "2017-03-27T16:30:27-04:00"
 		},
 		{
+			"checksumSHA1": "GdXtpLoHxfTdgsdgr3XaEmT7eCk=",
 			"path": "github.com/bosun-monitor/annotate/web",
-			"revision": "7a63972472cdcbd52933b5580927efca995e4598",
-			"revisionTime": "2016-10-19T16:13:39-06:00"
+			"revision": "c0740ed2ddc60564a6aff2ad44fb375b479e55ca",
+			"revisionTime": "2017-03-27T16:30:27-04:00"
 		},
 		{
 			"path": "github.com/bosun-monitor/statusio",
@@ -285,28 +288,28 @@
 			"revisionTime": "2014-04-30T10:51:40-04:00"
 		},
 		{
-			"checksumSHA1": "6uI9vIE0lJTMqhksuV1a0qN+TCo=",
+			"checksumSHA1": "2D5vo1CBsOIKPe9B0Phk1+m9uEg=",
 			"path": "github.com/captncraig/easyauth",
-			"revision": "5ee9deeaab8fbcecccc6ab819ba9d7dd9a228be5",
-			"revisionTime": "2017-02-10T23:26:38Z"
+			"revision": "f8cfe65ef31cd6959a9553175bb6caf1f5af928f",
+			"revisionTime": "2017-04-17T16:53:34Z"
 		},
 		{
-			"checksumSHA1": "23VEUUJGS8KRo4xpyu9qjTlx2KE=",
+			"checksumSHA1": "N51CVtTE9ZUN1I/+jJzFeb/SuXE=",
 			"path": "github.com/captncraig/easyauth/providers/ldap",
-			"revision": "5ee9deeaab8fbcecccc6ab819ba9d7dd9a228be5",
-			"revisionTime": "2017-02-10T23:26:38Z"
+			"revision": "f8cfe65ef31cd6959a9553175bb6caf1f5af928f",
+			"revisionTime": "2017-04-17T16:53:34Z"
 		},
 		{
-			"checksumSHA1": "WAQfJ8cUmdn7NnmAtAfOunfC0jw=",
+			"checksumSHA1": "z+rzZ/v6jmr+VDDEWxrYbKnZJA4=",
 			"path": "github.com/captncraig/easyauth/providers/token",
-			"revision": "5ee9deeaab8fbcecccc6ab819ba9d7dd9a228be5",
-			"revisionTime": "2017-02-10T23:26:38Z"
+			"revision": "f8cfe65ef31cd6959a9553175bb6caf1f5af928f",
+			"revisionTime": "2017-04-17T16:53:34Z"
 		},
 		{
 			"checksumSHA1": "bG2Nz0IR6+f6Re6IHrZN/yxfm1U=",
 			"path": "github.com/captncraig/easyauth/providers/token/redisStore",
-			"revision": "5ee9deeaab8fbcecccc6ab819ba9d7dd9a228be5",
-			"revisionTime": "2017-02-10T23:26:38Z"
+			"revision": "f8cfe65ef31cd6959a9553175bb6caf1f5af928f",
+			"revisionTime": "2017-04-17T16:53:34Z"
 		},
 		{
 			"path": "github.com/coreos/go-systemd/dbus",

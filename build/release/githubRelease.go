@@ -55,7 +55,7 @@ func main() {
 	fmt.Printf("Releasing to github %s.\n", number)
 
 	fmt.Println("Fetching latest release")
-	latest, _, err := client.Repositories.GetLatestRelease("bosun-monitor", "bosun")
+	latest, _, err := client.Repositories.GetLatestRelease("leapar", "bosun")
 	checkError(err)
 
 	fmt.Println("Getting all prs since last release to build release notes...")
@@ -65,7 +65,7 @@ func main() {
 	opts.State = "closed"
 	opts.Sort = "updated"
 	opts.PerPage = 100
-	reqs, _, err := client.PullRequests.List("bosun-monitor", "bosun", opts)
+	reqs, _, err := client.PullRequests.List("leapar", "bosun", opts)
 	checkError(err)
 
 	// group pr titles if they are prefaced by `cmd/scollector:` or similar.
@@ -104,7 +104,7 @@ func main() {
 	isDraft := true
 	release.Draft = &isDraft
 	release.Body = &body
-	release, _, err = client.Repositories.CreateRelease("bosun-monitor", "bosun", release)
+	release, _, err = client.Repositories.CreateRelease("leapar", "bosun", release)
 	checkError(err)
 
 	fmt.Println("Uploading artifacts...")
@@ -134,6 +134,6 @@ func uploadArtifact(filename string, id int) {
 	defer f.Close()
 	opts := &github.UploadOptions{}
 	opts.Name = filename
-	_, _, err = client.Repositories.UploadReleaseAsset("bosun-monitor", "bosun", id, opts, f)
+	_, _, err = client.Repositories.UploadReleaseAsset("leapar", "bosun", id, opts, f)
 	checkError(err)
 }

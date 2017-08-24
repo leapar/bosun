@@ -36,7 +36,7 @@ func init() {
 }
 
 const (
-	o = "bosun-monitor"
+	o = "leapar"
 	r = "bosun"
 )
 

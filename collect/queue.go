@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -11,11 +12,12 @@ import (
 	"sync/atomic"
 	"time"
 
+	"net/http/httptest"
+
 	"github.com/leapar/bosun/metadata"
 	"github.com/leapar/bosun/opentsdb"
 	"github.com/leapar/bosun/slog"
 	"github.com/GROpenSourceDev/go-ntlm-auth/ntlm"
-	"net/http/httptest"
 )
 
 func queuer() {
@@ -138,6 +140,8 @@ func sendBatch(batch []*opentsdb.DataPoint) {
 		time.Sleep(d)
 		return
 	}
+	// Drain up to 512 bytes so the Transport can reuse the connection when it is closed
+	io.CopyN(ioutil.Discard, resp.Body, 512)
 	recordSent(len(batch))
 }
 

@@ -50,7 +50,7 @@ func check(s *Schedule, t time.Time) {
 	for _, n := range names {
 		a := s.RuleConf.GetAlerts()[n]
 		s.ctx.runTime = t
-		s.checkAlert(a)
+		s.checkAlert(a, s.ctx)
 	}
 }
 
@@ -64,7 +64,7 @@ func setup() func() {
 
 func initSched(sc conf.SystemConfProvider, c conf.RuleConfProvider) (*Schedule, error) {
 	s := new(Schedule)
-	err := s.Init(sc, c, db, false, false)
+	err := s.Init(sc, c, db, nil, false, false)
 	return s, err
 }
 
@@ -98,7 +98,7 @@ func testSched(t *testing.T, st *schedTest) (s *Schedule) {
 		t.Fatal(err)
 	}
 	//confs := "tsdbHost = " + u.Host + "\n" + st.conf
-	c, err := rule.NewConf("testconf", conf.EnabledBackends{OpenTSDB: true}, st.conf)
+	c, err := rule.NewConf("testconf", conf.EnabledBackends{OpenTSDB: true}, nil, st.conf)
 	if err != nil {
 		t.Error(err)
 		t.Logf("conf:\n%s", st.conf)
@@ -168,7 +168,7 @@ func TestCrit(t *testing.T) {
 			},
 		},
 		state: map[schedState]bool{
-			schedState{"a{a=b}", "critical"}: true,
+			{"a{a=b}", "critical"}: true,
 		},
 	})
 	if !s.AlertSuccessful("a") {
@@ -236,7 +236,7 @@ func TestUnknown(t *testing.T) {
 			`q("avg:m{a=*}", ` + window5Min + `)`: {},
 		},
 		state: map[schedState]bool{
-			schedState{"a{a=b}", "unknown"}: true,
+			{"a{a=b}", "unknown"}: true,
 		},
 		touched: map[models.AlertKey]time.Time{
 			"a{a=b}": queryTime.Add(-10 * time.Minute),
@@ -256,7 +256,7 @@ func TestUnknown_HalfFreq(t *testing.T) {
 			`q("avg:m{a=*}", ` + window5Min + `)`: {},
 		},
 		state: map[schedState]bool{
-			schedState{"a{a=b}", "unknown"}: true,
+			{"a{a=b}", "unknown"}: true,
 		},
 		touched: map[models.AlertKey]time.Time{
 			"a{a=b}": queryTime.Add(-20 * time.Minute),
@@ -333,9 +333,9 @@ func TestRename(t *testing.T) {
 			},
 		},
 		state: map[schedState]bool{
-			schedState{"ping.host{host=ny-kbrandt02,source=ny-kbrandt02}", "warning"}: true,
-			schedState{"ping.host{host=ny-web01,source=ny-kbrandt02}", "warning"}:     true,
-			schedState{"os.cpu{host=ny-web02}", "warning"}:                            true,
+			{"ping.host{host=ny-kbrandt02,source=ny-kbrandt02}", "warning"}: true,
+			{"ping.host{host=ny-web01,source=ny-kbrandt02}", "warning"}:     true,
+			{"os.cpu{host=ny-web02}", "warning"}:                            true,
 		},
 	})
 }

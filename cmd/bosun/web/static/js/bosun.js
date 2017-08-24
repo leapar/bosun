@@ -8,25 +8,176 @@ var Token = (function () {
         this.User = "";
     }
     return Token;
-})();
+}());
 //metadata about a single role or permission
 var BitMeta = (function () {
     function BitMeta() {
     }
     return BitMeta;
-})();
+}());
 //all roles/permissions for bosun
 var RoleDefs = (function () {
     function RoleDefs() {
     }
     return RoleDefs;
-})();
+}());
+// See models/incident.go Event (can't be event here because JS uses that)
+var IncidentEvent = (function () {
+    function IncidentEvent(ie) {
+        this.Value = ie.Value;
+        this.Expr = ie.Expr;
+        this.Status = ie.Status;
+        this.Time = ie.Time;
+        this.Unevaluated = ie.Unevaluated;
+    }
+    return IncidentEvent;
+}());
+var Annotation = (function () {
+    function Annotation(a, get) {
+        a = a || {};
+        this.Id = a.Id || "";
+        this.Message = a.Message || "";
+        this.StartDate = a.StartDate || "";
+        this.EndDate = a.EndDate || "";
+        this.CreationUser = a.CreationUser || "";
+        this.Url = a.Url || "";
+        this.Source = a.Source || "bosun-ui";
+        this.Host = a.Host || "";
+        this.Owner = a.Owner || !get && getOwner() || "";
+        this.Category = a.Category || "";
+    }
+    Annotation.prototype.setTimeUTC = function () {
+        var now = moment().utc().format(timeFormat);
+        this.StartDate = now;
+        this.EndDate = now;
+    };
+    Annotation.prototype.setTime = function () {
+        var now = moment().format(timeFormat);
+        this.StartDate = now;
+        this.EndDate = now;
+    };
+    return Annotation;
+}());
+var Result = (function () {
+    function Result(r) {
+        this.Value = r.Value;
+        this.Expr = r.Expr;
+    }
+    return Result;
+}());
+var Action = (function () {
+    function Action(a) {
+        this.User = a.User;
+        this.Message = a.Message;
+        this.Time = a.Time;
+        this.Type = a.Type;
+        this.Deadline = a.Deadline;
+        this.Cancelled = a.Cancelled;
+        this.Fullfilled = a.Fullfilled;
+    }
+    return Action;
+}());
+// See models/incident.go
+var IncidentState = (function () {
+    function IncidentState(is) {
+        this.Id = is.Id;
+        this.Start = is.Start;
+        this.End = is.End;
+        this.AlertKey = is.AlertKey;
+        this.Alert = is.Alert;
+        this.Value = is.Value;
+        this.Expr = is.Expr;
+        this.Events = new Array();
+        if (is.Events) {
+            for (var _i = 0, _a = is.Events; _i < _a.length; _i++) {
+                var e = _a[_i];
+                this.Events.push(new IncidentEvent(e));
+            }
+        }
+        this.Actions = new Array();
+        if (is.Actions) {
+            for (var _b = 0, _c = is.Actions; _b < _c.length; _b++) {
+                var a = _c[_b];
+                this.Actions.push(new Action(a));
+            }
+        }
+        this.Subject = is.Subject;
+        this.NeedAck = is.NeedAck;
+        this.Open = is.Open;
+        this.Unevaluated = is.Unevaluated;
+        this.CurrentStatus = is.CurrentStatus;
+        this.WorstStatus = is.WorstStatus;
+        this.LastAbnormalStatus = is.LastAbnormalStatus;
+        this.LastAbnormalTime = is.LastAbnormalTime;
+    }
+    IncidentState.prototype.IsPendingClose = function () {
+        for (var _i = 0, _a = this.Actions; _i < _a.length; _i++) {
+            var action = _a[_i];
+            if (action.Deadline != undefined && !(action.Fullfilled || action.Cancelled)) {
+                return true;
+            }
+        }
+        return false;
+    };
+    return IncidentState;
+}());
+var StateGroup = (function () {
+    function StateGroup(sg) {
+        this.Active = sg.Active;
+        this.Status = sg.Status;
+        this.CurrentStatus = sg.CurrentStatus;
+        this.Silenced = sg.Silenced;
+        this.IsError = sg.IsError;
+        this.Subject = sg.Subject;
+        this.Alert = sg.Alert;
+        this.AlertKey = sg.AlertKey;
+        this.Ago = sg.Ago;
+        if (sg.State) {
+            this.State = new IncidentState(sg.State);
+        }
+        this.Children = new Array();
+        if (sg.Children) {
+            for (var _i = 0, _a = sg.Children; _i < _a.length; _i++) {
+                var c = _a[_i];
+                this.Children.push(new StateGroup(c));
+            }
+        }
+    }
+    return StateGroup;
+}());
+var Groups = (function () {
+    function Groups(g) {
+        this.NeedAck = new Array();
+        if (g.NeedAck) {
+            for (var _i = 0, _a = g.NeedAck; _i < _a.length; _i++) {
+                var sg = _a[_i];
+                this.NeedAck.push(new StateGroup(sg));
+            }
+        }
+        this.Acknowledged = new Array();
+        if (g.Acknowledged) {
+            for (var _b = 0, _c = g.Acknowledged; _b < _c.length; _b++) {
+                var sg = _c[_b];
+                this.Acknowledged.push(new StateGroup(sg));
+            }
+        }
+    }
+    return Groups;
+}());
+var StateGroups = (function () {
+    function StateGroups(sgs) {
+        this.Groups = new Groups(sgs.Groups);
+        this.TimeAndDate = sgs.TimeAndDate;
+        this.FailingAlerts = sgs.FailingAlerts;
+        this.UnclosedErrors = sgs.UnclosedErrors;
+    }
+    return StateGroups;
+}());
 /// <reference path="angular.d.ts" />
 /// <reference path="angular-route.d.ts" />
 /// <reference path="angular-sanitize.d.ts" />
 /// <reference path="bootstrap.d.ts" />
 /// <reference path="jquery.d.ts" />
-/// <reference path="d3.d.ts" />
 /// <reference path="underscore.d.ts" />
 /// <reference path="models.ts" />
 var bosunApp = angular.module('bosunApp', [
@@ -43,83 +194,85 @@ bosunApp.config(['$routeProvider', '$locationProvider', '$httpProvider', functio
             enabled: true,
             requireBase: false
         });
-        $routeProvider.
-            when('/', {
+        var when = function (u, r) {
+            $routeProvider.when(u, r);
+        };
+        when('/', {
             title: 'Dashboard',
             templateUrl: 'partials/dashboard.html',
             controller: 'DashboardCtrl'
-        }).
-            when('/items', {
+        });
+        when('/items', {
             title: 'Items',
             templateUrl: 'partials/items.html',
             controller: 'ItemsCtrl'
-        }).
-            when('/expr', {
+        });
+        when('/expr', {
             title: 'Expression',
             templateUrl: 'partials/expr.html',
             controller: 'ExprCtrl'
-        }).
-            when('/errors', {
+        });
+        when('/errors', {
             title: 'Errors',
             templateUrl: 'partials/errors.html',
             controller: 'ErrorCtrl'
-        }).
-            when('/graph', {
+        });
+        when('/graph', {
             title: 'Graph',
             templateUrl: 'partials/graph.html',
             controller: 'GraphCtrl'
-        }).
-            when('/host', {
+        });
+        when('/host', {
             title: 'Host View',
             templateUrl: 'partials/host.html',
             controller: 'HostCtrl',
             reloadOnSearch: false
-        }).
-            when('/silence', {
+        });
+        when('/silence', {
             title: 'Silence',
             templateUrl: 'partials/silence.html',
             controller: 'SilenceCtrl'
-        }).
-            when('/config', {
+        });
+        when('/config', {
             title: 'Configuration',
             templateUrl: 'partials/config.html',
             controller: 'ConfigCtrl',
             reloadOnSearch: false
-        }).
-            when('/action', {
+        });
+        when('/action', {
             title: 'Action',
             templateUrl: 'partials/action.html',
             controller: 'ActionCtrl'
-        }).
-            when('/history', {
+        });
+        when('/history', {
             title: 'Alert History',
             templateUrl: 'partials/history.html',
             controller: 'HistoryCtrl'
-        }).
-            when('/put', {
+        });
+        when('/put', {
             title: 'Data Entry',
             templateUrl: 'partials/put.html',
             controller: 'PutCtrl'
-        }).
-            when('/annotation', {
+        });
+        when('/annotation', {
             title: 'Annotation',
             templateUrl: 'partials/annotation.html',
             controller: 'AnnotationCtrl'
-        }).
-            when('/incident', {
+        });
+        when('/incident', {
             title: 'Incident',
             templateUrl: 'partials/incident.html',
             controller: 'IncidentCtrl'
-        }).
-            when('/tokens', {
+        });
+        when('/tokens', {
             title: 'Access Tokens',
             template: "<token-list></token-list>"
-        }).
-            when('/tokens/new', {
+        });
+        when('/tokens/new', {
             title: 'New Access Token',
             template: "<new-token></new-token>"
-        }).
-            otherwise({
+        });
+        $routeProvider.otherwise({
             redirectTo: '/'
         });
         $httpProvider.interceptors.push(function ($q) {
@@ -172,7 +325,7 @@ bosunControllers.controller('BosunCtrl', ['$scope', '$route', '$http', '$q', '$r
             return encodeURIComponent(v);
         };
         $scope.req_from_m = function (m) {
-            var r = new Request();
+            var r = new GraphRequest();
             var q = new Query(false);
             q.metric = m;
             r.queries.push(q);
@@ -208,17 +361,18 @@ bosunControllers.controller('BosunCtrl', ['$scope', '$route', '$http', '$q', '$r
             $scope.animate();
             var p = $http.get('/api/alerts?filter=' + encodeURIComponent(filter || ""))
                 .success(function (data) {
-                $scope.schedule = data;
+                $scope.schedule = new StateGroups(data);
                 $scope.timeanddate = data.TimeAndDate;
                 d.resolve();
             })
                 .error(function (err) {
                 d.reject(err);
             });
-            p.finally($scope.stop);
+            p["finally"]($scope.stop);
             return d.promise;
         };
-        var sz = 30;
+        // Size of the logo in (width and height) of the Bosun logo in the navbar
+        var sz = 25;
         var orig = 700;
         var light = '#4ba2d9';
         var dark = '#1f5296';
@@ -371,7 +525,7 @@ function createCookie(name, value, days) {
     if (days) {
         var date = new Date();
         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        expires = "; expires=" + date.toGMTString();
+        expires = "; expires=" + date.toUTCString();
     }
     else {
         expires = "";
@@ -415,32 +569,6 @@ bosunApp.filter('reverse', function () {
     };
 });
 var timeFormat = 'YYYY-MM-DDTHH:mm:ssZ';
-var Annotation = (function () {
-    function Annotation(a, get) {
-        a = a || {};
-        this.Id = a.Id || "";
-        this.Message = a.Message || "";
-        this.StartDate = a.StartDate || "";
-        this.EndDate = a.EndDate || "";
-        this.CreationUser = a.CreationUser || "";
-        this.Url = a.Url || "";
-        this.Source = a.Source || "bosun-ui";
-        this.Host = a.Host || "";
-        this.Owner = a.Owner || !get && getOwner() || "";
-        this.Category = a.Category || "";
-    }
-    Annotation.prototype.setTimeUTC = function () {
-        var now = moment().utc().format(timeFormat);
-        this.StartDate = now;
-        this.EndDate = now;
-    };
-    Annotation.prototype.setTime = function () {
-        var now = moment().format(timeFormat);
-        this.StartDate = now;
-        this.EndDate = now;
-    };
-    return Annotation;
-})();
 /// <reference path="0-bosun.ts" />
 bosunControllers.controller('ExprCtrl', ['$scope', '$http', '$location', '$route', function ($scope, $http, $location, $route) {
         var search = $location.search();
@@ -491,8 +619,7 @@ bosunControllers.controller('ExprCtrl', ['$scope', '$http', '$location', '$route
             .error(function (error) {
             $scope.error = error;
             $scope.running = '';
-        })
-            .finally(function () {
+        })["finally"](function () {
             $scope.stop();
         });
         $scope.set = function () {
@@ -537,11 +664,17 @@ bosunControllers.controller('ExprCtrl', ['$scope', '$http', '$location', '$route
 bosunControllers.controller('ActionCtrl', ['$scope', '$http', '$location', '$route', function ($scope, $http, $location, $route) {
         var search = $location.search();
         $scope.type = search.type;
+        $scope.activeIncidents = search.active == "true";
         $scope.notify = true;
         $scope.msgValid = true;
         $scope.message = "";
+        $scope.duration = "";
         $scope.validateMsg = function () {
             $scope.msgValid = (!$scope.notify) || ($scope.message != "");
+        };
+        $scope.durationValid = true;
+        $scope.validateDuration = function () {
+            $scope.durationValid = $scope.duration == "" || parseDuration($scope.duration).asMilliseconds() != 0;
         };
         if (search.key) {
             var keys = search.key;
@@ -556,7 +689,8 @@ bosunControllers.controller('ActionCtrl', ['$scope', '$http', '$location', '$rou
         }
         $scope.submit = function () {
             $scope.validateMsg();
-            if (!$scope.msgValid || ($scope.user == "")) {
+            $scope.validateDuration();
+            if (!$scope.msgValid || ($scope.user == "") || !$scope.durationValid) {
                 return;
             }
             var data = {
@@ -565,6 +699,9 @@ bosunControllers.controller('ActionCtrl', ['$scope', '$http', '$location', '$rou
                 Keys: $scope.keys,
                 Notify: $scope.notify
             };
+            if ($scope.duration != "") {
+                data['Time'] = moment.utc().add(parseDuration($scope.duration));
+            }
             $http.post('/api/action', data)
                 .success(function (data) {
                 $location.url('/');
@@ -617,14 +754,13 @@ bosunControllers.controller('AnnotationCtrl', ['$scope', '$http', '$location', '
                 .error(function (error) {
                 $scope.error = "failed to create annotation: " + error.error;
                 $scope.submitSuccess = false;
-            })
-                .finally(function () {
+            })["finally"](function () {
                 $scope.stop();
             });
         };
         $scope.deleteAnnotation = function () {
             $scope.animate();
-            $http.delete('/api/annotation/' + $scope.annotation.Id)
+            $http["delete"]('/api/annotation/' + $scope.annotation.Id)
                 .success(function (data) {
                 $scope.error = "";
                 $scope.deleteSuccess = true;
@@ -635,8 +771,7 @@ bosunControllers.controller('AnnotationCtrl', ['$scope', '$http', '$location', '
                 .error(function (error) {
                 $scope.error = "failed to delete annotation with id: " + $scope.annotation.Id + ", error: " + error.error;
                 $scope.deleteSuccess = false;
-            })
-                .finally(function () {
+            })["finally"](function () {
                 $scope.stop();
             });
         };
@@ -725,16 +860,16 @@ var AuthService = (function () {
         });
     };
     return AuthService;
-})();
+}());
 bosunApp.service("authService", AuthService);
 //simple component to show a <username-input> easily
 var UsernameInputController = (function () {
     function UsernameInputController(auth) {
         this.auth = auth;
     }
-    UsernameInputController.$inject = ['authService'];
     return UsernameInputController;
-})();
+}());
+UsernameInputController.$inject = ['authService'];
 bosunApp.component("usernameInput", {
     controller: UsernameInputController,
     controllerAs: "ct",
@@ -761,6 +896,13 @@ bosunControllers.controller('ConfigCtrl', ['$scope', '$http', '$location', '$rou
         $scope.aceMode = 'bosun';
         $scope.expandDiff = false;
         $scope.runningChangedHelp = "The running config has been changed. This means you are in danger of overwriting someone else's changes. To view the changes open the 'Save Dialogue' and you will see a unified diff. The only way to get rid of the error panel is to open a new instance of the rule editor and copy your changes into it. You are still permitted to save without doing this, but then you must be very careful not to overwrite anyone else's changes.";
+        $scope.sectionToDocs = {
+            "alert": "https://bosun.org/definitions#alert-definitions",
+            "template": "https://bosun.org/definitions#templates",
+            "lookup": "https://bosun.org/definitions#lookup-tables",
+            "notification": "https://bosun.org/definitions#notifications",
+            "macro": "https://bosun.org/definitions#macros"
+        };
         var expr = search.expr;
         function buildAlertFromExpr() {
             if (!expr)
@@ -893,8 +1035,7 @@ bosunControllers.controller('ConfigCtrl', ['$scope', '$http', '$location', '$rou
             })
                 .error(function (error) {
                 $scope.error = error;
-            })
-                .finally(function () {
+            })["finally"](function () {
                 $scope.stop();
                 delete (set.show);
             });
@@ -1075,8 +1216,7 @@ bosunControllers.controller('ConfigCtrl', ['$scope', '$http', '$location', '$rou
             })
                 .error(function (error) {
                 $scope.error = error;
-            })
-                .finally(function () {
+            })["finally"](function () {
                 $scope.running = false;
                 $scope.stop();
             });
@@ -1106,8 +1246,7 @@ bosunControllers.controller('ConfigCtrl', ['$scope', '$http', '$location', '$rou
             })
                 .error(function (error) {
                 v.error = error;
-            })
-                .finally(function () {
+            })["finally"](function () {
                 v.doneLoading = true;
             });
         };
@@ -1243,9 +1382,12 @@ function fmtTime(v) {
     return m.format() + ' (' + inn + fmtDuration(msdiff) + ago + ')';
 }
 function parseDuration(v) {
-    var pattern = /(\d+)(d|y|n|h|m|s)-ago/;
+    var pattern = /(\d+)(d|y|n|h|m|s)(-ago)?/;
     var m = pattern.exec(v);
-    return moment.duration(parseInt(m[1]), m[2].replace('n', 'M'));
+    if (m) {
+        return moment.duration(parseInt(m[1]), m[2].replace('n', 'M'));
+    }
+    return moment.duration(0);
 }
 bosunApp.directive("tsTime", function () {
     return {
@@ -2235,8 +2377,7 @@ bosunControllers.controller('ErrorCtrl', ['$scope', '$http', '$location', '$rout
         })
             .error(function (data) {
             $scope.error = "Error fetching data: " + data;
-        })
-            .finally(function () { $scope.loading = false; });
+        })["finally"](function () { $scope.loading = false; });
         $scope.click = function (err, event) {
             event.stopPropagation();
         };
@@ -2293,17 +2434,17 @@ var TagSet = (function () {
     function TagSet() {
     }
     return TagSet;
-})();
+}());
 var TagV = (function () {
     function TagV() {
     }
     return TagV;
-})();
+}());
 var RateOptions = (function () {
     function RateOptions() {
     }
     return RateOptions;
-})();
+}());
 var Filter = (function () {
     function Filter(f) {
         this.type = f && f.type || "auto";
@@ -2312,12 +2453,12 @@ var Filter = (function () {
         this.groupBy = f && f.groupBy || false;
     }
     return Filter;
-})();
+}());
 var FilterMap = (function () {
     function FilterMap() {
     }
     return FilterMap;
-})();
+}());
 var Query = (function () {
     function Query(filterSupport, q) {
         this.aggregator = q && q.aggregator || 'sum';
@@ -2415,13 +2556,13 @@ var Query = (function () {
         }
     };
     return Query;
-})();
-var Request = (function () {
-    function Request() {
+}());
+var GraphRequest = (function () {
+    function GraphRequest() {
         this.start = '1h-ago';
         this.queries = [];
     }
-    Request.prototype.prune = function () {
+    GraphRequest.prototype.prune = function () {
         var _this = this;
         for (var i = 0; i < this.queries.length; i++) {
             angular.forEach(this.queries[i], function (v, k) {
@@ -2446,14 +2587,14 @@ var Request = (function () {
             });
         }
     };
-    return Request;
-})();
+    return GraphRequest;
+}());
 var graphRefresh;
 var Version = (function () {
     function Version() {
     }
     return Version;
-})();
+}());
 bosunControllers.controller('GraphCtrl', ['$scope', '$http', '$location', '$route', '$timeout', 'authService', function ($scope, $http, $location, $route, $timeout, auth) {
         $scope.aggregators = ["sum", "min", "max", "avg", "dev", "zimsum", "mimmin", "minmax"];
         $scope.dsaggregators = ["", "sum", "min", "max", "avg", "dev", "zimsum", "mimmin", "minmax"];
@@ -2477,7 +2618,7 @@ bosunControllers.controller('GraphCtrl', ['$scope', '$http', '$location', '$rout
             j = atob(search.b64);
         }
         $scope.annotation = new Annotation();
-        var request = j ? JSON.parse(j) : new Request;
+        var request = j ? JSON.parse(j) : new GraphRequest;
         $scope.index = parseInt($location.hash()) || 0;
         $scope.tagvs = [];
         $scope.sorted_tagks = [];
@@ -2541,7 +2682,7 @@ bosunControllers.controller('GraphCtrl', ['$scope', '$http', '$location', '$rout
                 $scope.error = error;
             });
         };
-        $scope.deleteAnnotation = function () { return $http.delete('/api/annotation/' + $scope.annotation.Id)
+        $scope.deleteAnnotation = function () { return $http["delete"]('/api/annotation/' + $scope.annotation.Id)
             .success(function (data) {
             $scope.error = "";
             $scope.annotations = _.without($scope.annotations, _.findWhere($scope.annotations, { Id: $scope.annotation.Id }));
@@ -2668,7 +2809,7 @@ bosunControllers.controller('GraphCtrl', ['$scope', '$http', '$location', '$rout
             });
         }
         function getRequest() {
-            request = new Request;
+            request = new GraphRequest;
             request.start = $scope.start;
             request.end = $scope.end;
             angular.forEach($scope.query_p, function (p) {
@@ -2815,8 +2956,7 @@ bosunControllers.controller('GraphCtrl', ['$scope', '$http', '$location', '$rout
                 .error(function (error) {
                 $scope.error = error;
                 $scope.running = '';
-            })
-                .finally(function () {
+            })["finally"](function () {
                 $scope.stop();
                 if ($scope.refresh) {
                     graphRefresh = $timeout(function () { get(true); }, 5000);
@@ -2906,7 +3046,7 @@ bosunControllers.controller('HostCtrl', ['$scope', '$http', '$location', '$route
         $scope.metrics = [];
         var currentURL = $location.url();
         $scope.mlink = function (m) {
-            var r = new Request();
+            var r = new GraphRequest();
             var q = new Query(false);
             q.metric = m;
             q.tags = { 'host': $scope.host };
@@ -2934,7 +3074,7 @@ bosunControllers.controller('HostCtrl', ['$scope', '$http', '$location', '$route
             });
         });
         var autods = '&autods=100';
-        var cpu_r = new Request();
+        var cpu_r = new GraphRequest();
         cpu_r.start = $scope.time;
         cpu_r.queries = [
             new Query(false, {
@@ -2951,7 +3091,7 @@ bosunControllers.controller('HostCtrl', ['$scope', '$http', '$location', '$route
             data.Series[0].Name = 'Percent Used';
             $scope.cpu = data.Series;
         });
-        var mem_r = new Request();
+        var mem_r = new GraphRequest();
         mem_r.start = $scope.time;
         mem_r.queries.push(new Query(false, {
             metric: "os.mem.total",
@@ -2970,7 +3110,7 @@ bosunControllers.controller('HostCtrl', ['$scope', '$http', '$location', '$route
             $scope.mem_total = Math.max.apply(null, data.Series[0].Data.map(function (d) { return d[1]; }));
             $scope.mem = [data.Series[1]];
         });
-        var net_bytes_r = new Request();
+        var net_bytes_r = new GraphRequest();
         net_bytes_r.start = $scope.time;
         net_bytes_r.queries = [
             new Query(false, {
@@ -3002,7 +3142,7 @@ bosunControllers.controller('HostCtrl', ['$scope', '$http', '$location', '$route
             });
             $scope.idata = tmp;
         });
-        var fs_r = new Request();
+        var fs_r = new GraphRequest();
         fs_r.start = $scope.time;
         fs_r.queries = [
             new Query(false, {
@@ -3079,8 +3219,7 @@ bosunControllers.controller('IncidentCtrl', ['$scope', '$http', '$location', '$r
             })
                 .error(function (error) {
                 v.error = error;
-            })
-                .finally(function () {
+            })["finally"](function () {
                 v.doneLoading = true;
             });
         };
@@ -3098,7 +3237,7 @@ bosunControllers.controller('IncidentCtrl', ['$scope', '$http', '$location', '$r
             $scope.actions = data.Actions;
             $scope.body = $sce.trustAsHtml(data.Body);
             $scope.events = data.Events.reverse();
-            $scope.configLink = configUrl($scope.incident.AlertKey, moment.unix($scope.incident.LastAbnormalTime * 1000));
+            $scope.configLink = configUrl($scope.incident.AlertKey, moment.unix($scope.incident.LastAbnormalTime));
             for (var i = 0; i < $scope.events.length; i++) {
                 var e = $scope.events[i];
                 if (e.Status != 'normal' && e.Status != 'unknown') {
@@ -3122,7 +3261,7 @@ bosunControllers.controller('ItemsCtrl', ['$scope', '$http', function ($scope, $
             .error(function (error) {
             $scope.status = 'Unable to fetch metrics: ' + error;
         });
-        $http.get('/api/tagv/host?since=default&uid=1')
+        $http.get('/api/tagv/host?since=default')
             .success(function (data) {
             $scope.hosts = data;
         })
@@ -3134,12 +3273,12 @@ var Tag = (function () {
     function Tag() {
     }
     return Tag;
-})();
+}());
 var DP = (function () {
     function DP() {
     }
     return DP;
-})();
+}());
 bosunControllers.controller('PutCtrl', ['$scope', '$http', '$route', function ($scope, $http, $route) {
         $scope.tags = [new Tag];
         var dp = new DP;
@@ -3335,8 +3474,7 @@ bosunControllers.controller('SilenceCtrl', ['$scope', '$http', '$location', '$ro
             $http.post('/api/silence/set', state)
                 .error(function (error) {
                 $scope.error = error;
-            })
-                .finally(get);
+            })["finally"](get);
         };
         $scope.clear = function (id) {
             if (!window.confirm('Clear this silence?')) {
@@ -3346,8 +3484,7 @@ bosunControllers.controller('SilenceCtrl', ['$scope', '$http', '$location', '$ro
             $http.post('/api/silence/clear?id=' + id, {})
                 .error(function (error) {
                 $scope.error = error;
-            })
-                .finally(get);
+            })["finally"](get);
         };
         $scope.time = function (v) {
             var m = moment(v).utc();
@@ -3409,7 +3546,7 @@ bosunApp.directive('tsAckGroup', ['$location', '$timeout', function ($location, 
                             continue;
                         }
                         scope.anySelected = true;
-                        if (g.Active && g.Status != 'unknown' && g.Status != 'error') {
+                        if (g.Status == 'error') {
                             scope.canCloseSelected = false;
                         }
                         if (g.Status != 'unknown') {
@@ -3419,20 +3556,28 @@ bosunApp.directive('tsAckGroup', ['$location', '$timeout', function ($location, 
                 };
                 scope.multiaction = function (type) {
                     var keys = [];
+                    var active = false;
                     angular.forEach(scope.groups, function (group) {
                         if (!group.checked) {
                             return;
                         }
                         if (group.AlertKey) {
+                            if (group.State.CurrentStatus != 'normal') {
+                                active = true;
+                            }
                             keys.push(group.AlertKey);
                         }
                         angular.forEach(group.Children, function (child) {
+                            if (child.State.CurrentStatus != 'normal') {
+                                active = true;
+                            }
                             keys.push(child.AlertKey);
                         });
                     });
                     scope.$parent.setKey("action-keys", keys);
                     $location.path("action");
                     $location.search("type", type);
+                    $location.search("active", active ? 'true' : 'false');
                 };
                 scope.history = function () {
                     var url = '/history?';
@@ -3462,7 +3607,8 @@ bosunApp.directive('tsState', ['$sce', '$http', function ($sce, $http) {
                 scope.state = scope.child.State;
                 scope.action = function (type) {
                     var key = encodeURIComponent(scope.name);
-                    return '/action?type=' + type + '&key=' + key;
+                    var active = scope.state.CurrentStatus != 'normal';
+                    return '/action?type=' + type + '&key=' + key + '&active=' + active;
                 };
                 var loadedBody = false;
                 scope.toggle = function () {
@@ -3532,6 +3678,12 @@ bosunApp.directive('tsClose', function () {
         templateUrl: '/partials/close.html'
     };
 });
+bosunApp.directive('tsCancelClose', function () {
+    return {
+        restrict: 'E',
+        templateUrl: '/partials/cancelClose.html'
+    };
+});
 bosunApp.directive('tsForget', function () {
     return {
         restrict: 'E',
@@ -3556,9 +3708,10 @@ var TokenListController = (function () {
         var _this = this;
         this.$http = $http;
         this.auth = auth;
-        this.delete = function (hash) {
+        this["delete"] = function () {
             _this.status = "Deleting...";
-            _this.$http.delete("/api/tokens?hash=" + encodeURIComponent(hash))
+            _this.deleteTarget = "";
+            _this.$http["delete"]("/api/tokens?hash=" + encodeURIComponent(_this.deleteTarget))
                 .then(function () {
                 _this.status = "";
                 _this.load();
@@ -3595,13 +3748,14 @@ var TokenListController = (function () {
         };
         this.load();
     }
-    TokenListController.$inject = ['$http', "authService"];
     return TokenListController;
-})();
+}());
+TokenListController.$inject = ['$http', "authService"];
 bosunApp.component('tokenList', {
     controller: TokenListController,
     controllerAs: "ct",
-    template: "\n<div class=\"alert alert-danger\" ng-show=\"ct.status\">{{ct.status}}</div>\n<h2>Access Tokens</h2>\n    <table class=\"table table-striped\">\n        <thead>\n        <tr>\n            <th>ID</th>\n            <th>User</th>\n            <th>Description</th>\n            <th>Permissions</th>\n            <th>Last Used</th>\n            <th></th>\n        </tr>\n        </thead>\n        <tbody>\n        <tr  ng-repeat=\"tok in ct.tokens | orderBy:'-LastUsed'\">\n            <td>{{tok.Hash | limitTo: 6}}</td>\n            <td>{{tok.User}}</td>\n            <td>{{tok.Description}}</td>\n            <td>\n                <a data-template=\"{{ct.permList(tok)}}\" \n                data-animation=\"am-flip-x\" \n                data-trigger=\"hover\"\n                data-auto-close=\"1\" bs-popover>{{tok.RoleName}}</a>\n \n            </td>\n            <td><span ng-if=\"tok.LastUsed.year() > 2000\" ts-since=\"tok.LastUsed\"></span> <span ng-if=\"tok.LastUsed.year() <= 2000\">Never</span></td>\n            <td><a class='btn btn-danger glyphicon glyphicon-trash' ng-click='ct.delete(tok.Hash)'></a></td>\n        </tr>\n        </tbody>\n    </table>\n    <a class='btn btn-primary' href='/tokens/new'><span class='glyphicon glyphicon-plus'/> Create new token</a>\n" });
+    templateUrl: '/static/partials/tokenList.html'
+});
 /// <reference path="0-bosun.ts" />
 var NewTokenController = (function () {
     function NewTokenController($http, auth) {
@@ -3641,9 +3795,9 @@ var NewTokenController = (function () {
     NewTokenController.prototype.encoded = function () {
         return encodeURIComponent(this.createdToken);
     };
-    NewTokenController.$inject = ['$http', 'authService'];
     return NewTokenController;
-})();
+}());
+NewTokenController.$inject = ['$http', 'authService'];
 bosunApp.component("newToken", {
     controller: NewTokenController,
     controllerAs: "ct",

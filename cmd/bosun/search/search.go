@@ -281,14 +281,20 @@ func (s *Search) TagValuesByTagKey(Tagk, uid string, since time.Duration) ([]str
 	return s.TagValuesByMetricTagKey(database.Search_All, Tagk, uid, since)
 }
 
-func (s *Search) MetricsByTagPair(tagk, tagv, uid string) ([]string, error) {
+func (s *Search) MetricsByTagPair(tagk, tagv, uid string, since time.Duration) ([]string, error) {
+	var t int64
+	if since > 0 {
+		t = time.Now().Add(-since).Unix()
+	}
 	metrics, err := s.DataAccess.Search().GetMetricsForTag(tagk, tagv, uid)
 	if err != nil {
 		return nil, err
 	}
 	r := []string{}
-	for k := range metrics {
-		r = append(r, k)
+	for k, ts := range metrics {
+		if t <= ts {
+			r = append(r, k)
+		}
 	}
 	sort.Strings(r)
 	return r, nil

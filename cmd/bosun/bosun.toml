@@ -37,7 +37,7 @@ PingDuration = "24h"
 SearchSince = "72h"
 
 # Enable saving API endpoints and the ability to save the config via the UI. Default is false
-# EnableSave = true
+EnableSave = true
 
 # Path to a command that will be executed on save of the rule configuration. This command is passed a filename, username, message, and vargs
 # If the command does not execute save operations will be canceled and the rule file will be restored
@@ -60,7 +60,7 @@ SearchSince = "72h"
 
 # Configuration of hosts to enable the Elastic backend
 [ElasticConf]
-	Hosts = ["http://172.29.231.177:9200"]
+	#Hosts = ["http://172.29.231.177:9200"]
 
 # Configuration for embedding the annotate service (also enables annotations if hosts are defined)
 [AnnotateConf]
@@ -72,10 +72,10 @@ SearchSince = "72h"
 # for production setups. Defaults for ledis are below but would be ignored since redis takes
 # precedence
 [DBConf]
-	RedisHost = "localhost:6379"
-	#RedisPassword = "123456"
-	LedisDir = "ledis_data"
-	LedisBindAddr = "127.0.0.1:9565"
+	RedisHost = "172.29.231.177:6379"
+	RedisPassword = "123456"
+	#LedisDir = "ledis_data"
+	#LedisBindAddr = "127.0.0.1:9565"
 
 # Configuration to enable Bosun to be able to send email notifications
 [SMTPConf]

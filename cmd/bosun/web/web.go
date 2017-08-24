@@ -47,7 +47,7 @@ var (
 	//InternetProxy is a url to use as a proxy when communicating with external services.
 	//currently only google's shortener.
 	InternetProxy   *url.URL
-	annotateBackend backend.Backend
+	AnnotateBackend backend.Backend
 	reload          func() error
 
 	tokensEnabled bool
@@ -189,25 +189,9 @@ func Listen(httpAddr, httpsAddr, certFile, keyFile string, devMode bool, tsdbHos
 
 	// Annotations
 	if schedule.SystemConf.AnnotateEnabled() {
-		index := schedule.SystemConf.GetAnnotateIndex()
-		if index == "" {
-			index = "annotate"
-		}
-		annotateBackend = backend.NewElastic(schedule.SystemConf.GetAnnotateElasticHosts(), false, index)
-
-		go func() {
-			for {
-				err := annotateBackend.InitBackend()
-				if err == nil {
-					return
-				}
-				slog.Warningf("could not initalize annotate backend, will try again: %v", err)
-				time.Sleep(time.Second * 30)
-			}
-		}()
 		read := baseChain.Append(auth.Wrapper(canViewAnnotations)).ThenFunc
 		write := baseChain.Append(auth.Wrapper(canCreateAnnotations)).ThenFunc
-		web.AddRoutesWithMiddleware(router, "/api", []backend.Backend{annotateBackend}, false, false, read, write)
+		web.AddRoutesWithMiddleware(router, "/api", []backend.Backend{AnnotateBackend}, false, false, read, write)
 	}
 
 	//auth specific stuff
@@ -626,6 +610,12 @@ func Alerts(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (inter
 	return schedule.MarshalGroups(t, r.FormValue("filter"))
 }
 
+type ExtStatus struct {
+	AlertName string
+	*models.IncidentState
+	*models.RenderedTemplates
+}
+
 func IncidentEvents(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (interface{}, error) {
 	id := r.FormValue("id")
 	if id == "" {
@@ -635,16 +625,20 @@ func IncidentEvents(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request
 	if err != nil {
 		return nil, err
 	}
-	return schedule.DataAccess.State().GetIncidentState(num)
+	state, err := schedule.DataAccess.State().GetIncidentState(num)
+	if err != nil {
+		return nil, err
+	}
+	rt, err := schedule.DataAccess.State().GetRenderedTemplates(state.Id)
+	if err != nil {
+		return nil, err
+	}
+	st := ExtStatus{IncidentState: state, RenderedTemplates: rt}
+	return st, nil
 }
 
 func Status(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (interface{}, error) {
 	r.ParseForm()
-	type ExtStatus struct {
-		AlertName string
-		*models.IncidentState
-		*models.RenderedTemplates
-	}
 	m := make(map[string]ExtStatus)
 	for _, k := range r.Form["ak"] {
 		ak, err := models.ParseAlertKey(k)
@@ -713,17 +707,21 @@ func Action(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (inter
 		Ids     []int64
 		Notify  bool
 		User    string
+		Time    *time.Time
 	}
 	j := json.NewDecoder(r.Body)
 	if err := j.Decode(&data); err != nil {
 		return nil, err
 	}
 	var at models.ActionType
+	// TODO Make constants in the JS code for these that *match* the names the string Method for ActionType
 	switch data.Type {
 	case "ack":
 		at = models.ActionAcknowledge
 	case "close":
 		at = models.ActionClose
+	case "cancelClose":
+		at = models.ActionCancelClose
 	case "forget":
 		at = models.ActionForget
 	case "forceClose":
@@ -749,7 +747,7 @@ func Action(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (inter
 		if err != nil {
 			return nil, err
 		}
-		err = schedule.ActionByAlertKey(data.User, data.Message, at, ak)
+		err = schedule.ActionByAlertKey(data.User, data.Message, at, data.Time, ak)
 		if err != nil {
 			errs[key] = err
 		} else {
@@ -757,7 +755,7 @@ func Action(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (inter
 		}
 	}
 	for _, id := range data.Ids {
-		ak, err := schedule.ActionByIncidentId(data.User, data.Message, at, id)
+		ak, err := schedule.ActionByIncidentId(data.User, data.Message, at, data.Time, id)
 		if err != nil {
 			errs[fmt.Sprintf("%v", id)] = err
 		} else {
@@ -864,7 +862,7 @@ func ConfigTest(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request) (i
 	if len(b) == 0 {
 		return nil, fmt.Errorf("empty config")
 	}
-	_, err = rule.NewConf("test", schedule.SystemConf.EnabledBackends(), string(b))
+	_, err = rule.NewConf("test", schedule.SystemConf.EnabledBackends(), schedule.SystemConf.GetRuleVars(), string(b))
 	if err != nil {
 		fmt.Fprintf(w, err.Error())
 	}

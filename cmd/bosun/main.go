@@ -18,7 +18,6 @@ import (
 
 	"github.com/leapar/bosun/_version"
 
-	"github.com/facebookgo/httpcontrol"
 	"github.com/leapar/bosun/cmd/bosun/conf"
 	"github.com/leapar/bosun/cmd/bosun/conf/rule"
 	"github.com/leapar/bosun/cmd/bosun/database"
@@ -31,6 +30,8 @@ import (
 	"github.com/leapar/bosun/opentsdb"
 	"github.com/leapar/bosun/slog"
 	"github.com/leapar/bosun/util"
+	"github.com/leapar/annotate/backend"
+	"github.com/facebookgo/httpcontrol"
 	"gopkg.in/fsnotify.v1"
 )
 
@@ -72,6 +73,14 @@ func init() {
 			},
 		},
 	}
+	sched.DefaultClient = &http.Client{
+		Transport: &bosunHttpTransport{
+			"Bosun/" + version.ShortVersion(),
+			&httpcontrol.Transport{
+				RequestTimeout: time.Second * 5,
+			},
+		},
+	}
 }
 
 var (
@@ -105,7 +114,7 @@ func main() {
 	if err != nil {
 		slog.Fatal(err)
 	}
-	ruleConf, err := rule.ParseFile(sysProvider.GetRuleFilePath(), systemConf.EnabledBackends())
+	ruleConf, err := rule.ParseFile(sysProvider.GetRuleFilePath(), systemConf.EnabledBackends(), systemConf.GetRuleVars())
 	if err != nil {
 		slog.Fatalf("couldn't read rules: %v", err)
 	}
@@ -132,8 +141,27 @@ func main() {
 	if err != nil {
 		slog.Fatal(err)
 	}
-
-	if err := sched.Load(sysProvider, ruleProvider, da, *flagSkipLast, *flagQuiet); err != nil {
+	var annotateBackend backend.Backend
+	if sysProvider.AnnotateEnabled() {
+		index := sysProvider.GetAnnotateIndex()
+		if index == "" {
+			index = "annotate"
+		}
+		config := sysProvider.GetAnnotateElasticHosts()
+		annotateBackend = backend.NewElastic([]string(config.Hosts), config.SimpleClient, index)
+		go func() {
+			for {
+				err := annotateBackend.InitBackend()
+				if err == nil {
+					return
+				}
+				slog.Warningf("could not initialize annotate backend, will try again: %v", err)
+				time.Sleep(time.Second * 30)
+			}
+		}()
+		web.AnnotateBackend = annotateBackend
+	}
+	if err := sched.Load(sysProvider, ruleProvider, da, annotateBackend, *flagSkipLast, *flagQuiet); err != nil {
 		slog.Fatal(err)
 	}
 	if err := metadata.InitF(false, func(k metadata.Metakey, v interface{}) error { return sched.DefaultSched.PutMetadata(k, v) }); err != nil {
@@ -193,7 +221,7 @@ func main() {
 		defer func() {
 			<-reloading
 		}()
-		newConf, err := rule.ParseFile(sysProvider.GetRuleFilePath(), sysProvider.EnabledBackends())
+		newConf, err := rule.ParseFile(sysProvider.GetRuleFilePath(), sysProvider.EnabledBackends(), sysProvider.GetRuleVars())
 		if err != nil {
 			return err
 		}
@@ -208,7 +236,7 @@ func main() {
 		slog.Infoln("schedule shutdown, loading new schedule")
 
 		// Load does not set the DataAccess or Search if it is already set
-		if err := sched.Load(sysProvider, newConf, da, *flagSkipLast, *flagQuiet); err != nil {
+		if err := sched.Load(sysProvider, newConf, da, annotateBackend, *flagSkipLast, *flagQuiet); err != nil {
 			slog.Fatal(err)
 		}
 		web.ResetSchedule() // Signal web to point to the new DefaultSchedule
@@ -249,7 +277,7 @@ func main() {
 				slog.Infoln("Interrupt: closing down...")
 				sched.Close(false)
 				slog.Infoln("done")
-				os.Exit(1)
+				os.Exit(0)
 			}()
 		}
 	}()

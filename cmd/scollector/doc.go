@@ -4,7 +4,7 @@ Scollector is a metric collection agent for OpenTSDB 2.0 and Bosun.
 
 tcollector (https://github.com/OpenTSDB/tcollector) is OpenTSDB's data
 collection framework built for OpenTSDB 1.0. scollector aims to be tcollector
-for OpenTSDB 2.0 and is one method of sending data to Bosun (http://github.com/leapar/bosun/)
+for OpenTSDB 2.0 and is one method of sending data to Bosun (http://bosun.org/)
 for monitoring.
 
 Unlike tcollector, scollector is a single binary where all collectors are
@@ -68,7 +68,7 @@ is used.
 
 External Collectors
 
-See http://github.com/leapar/bosun/scollector/external-collectors for details about using
+See http://bosun.org/scollector/external-collectors for details about using
 external scripts or programs to collect metrics.
 
 Configuration File
@@ -120,6 +120,8 @@ matching on Linux.
 
 PProf (string): optional IP:Port binding to be used for debugging with pprof.
 Examples: localhost:6060 for loopback or :6060 for all IP addresses.
+
+MetricPrefix (string): optional Prefix prepended to all metrics path.
 
 Collector configuration keys
 
@@ -261,7 +263,7 @@ Process: processes to monitor.
 
 ProcessDotNet: .NET processes to monitor on Windows.
 
-See http://github.com/leapar/bosun/scollector/process-monitoring for details about Process and
+See http://bosun.org/scollector/process-monitoring for details about Process and
 ProcessDotNet.
 
 HTTPUnit (array of table, keys are TOML, Hiera): httpunit TOML and Hiera

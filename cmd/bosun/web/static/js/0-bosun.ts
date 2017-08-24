@@ -3,9 +3,10 @@
 /// <reference path="angular-sanitize.d.ts" />
 /// <reference path="bootstrap.d.ts" />
 /// <reference path="jquery.d.ts" />
-/// <reference path="d3.d.ts" />
 /// <reference path="underscore.d.ts" />
 /// <reference path="models.ts" />
+
+declare var d3: any;
 
 var bosunApp = angular.module('bosunApp', [
     'ngRoute',
@@ -17,90 +18,98 @@ var bosunApp = angular.module('bosunApp', [
     'ngclipboard',
 ]);
 
+interface ITitleRoute extends ng.route.IRoute {
+    title?: string;
+}
+
 bosunApp.config(['$routeProvider', '$locationProvider', '$httpProvider', function ($routeProvider: ng.route.IRouteProvider, $locationProvider: ng.ILocationProvider, $httpProvider: ng.IHttpProvider) {
     $locationProvider.html5Mode({
         enabled: true,
         requireBase: false
     });
-    $routeProvider.
-        when('/', {
-            title: 'Dashboard',
-            templateUrl: 'partials/dashboard.html',
-            controller: 'DashboardCtrl',
-        }).
-        when('/items', {
-            title: 'Items',
-            templateUrl: 'partials/items.html',
-            controller: 'ItemsCtrl',
-        }).
-        when('/expr', {
-            title: 'Expression',
-            templateUrl: 'partials/expr.html',
-            controller: 'ExprCtrl',
-        }).
-        when('/errors', {
-            title: 'Errors',
-            templateUrl: 'partials/errors.html',
-            controller: 'ErrorCtrl',
-        }).
-        when('/graph', {
-            title: 'Graph',
-            templateUrl: 'partials/graph.html',
-            controller: 'GraphCtrl',
-        }).
-        when('/host', {
-            title: 'Host View',
-            templateUrl: 'partials/host.html',
-            controller: 'HostCtrl',
-            reloadOnSearch: false,
-        }).
-        when('/silence', {
-            title: 'Silence',
-            templateUrl: 'partials/silence.html',
-            controller: 'SilenceCtrl',
-        }).
-        when('/config', {
-            title: 'Configuration',
-            templateUrl: 'partials/config.html',
-            controller: 'ConfigCtrl',
-            reloadOnSearch: false,
-        }).
-        when('/action', {
-            title: 'Action',
-            templateUrl: 'partials/action.html',
-            controller: 'ActionCtrl',
-        }).
-        when('/history', {
-            title: 'Alert History',
-            templateUrl: 'partials/history.html',
-            controller: 'HistoryCtrl',
-        }).
-        when('/put', {
-            title: 'Data Entry',
-            templateUrl: 'partials/put.html',
-            controller: 'PutCtrl',
-        }).
-        when('/annotation', {
-            title: 'Annotation',
-            templateUrl: 'partials/annotation.html',
-            controller: 'AnnotationCtrl',
-        }).
-        when('/incident', {
-            title: 'Incident',
-            templateUrl: 'partials/incident.html',
-            controller: 'IncidentCtrl',
-        }).
-        when('/tokens', {
-            title: 'Access Tokens',
-            template: `<token-list></token-list>`,
-        }).
-        when('/tokens/new', {
-            title: 'New Access Token',
-            template: `<new-token></new-token>`,
-        }).
-        otherwise({
-            redirectTo: '/',
-        });
+
+    var when = (u: string, r: ITitleRoute) => {
+        $routeProvider.when(u, r);
+    }
+
+    when('/', {
+        title: 'Dashboard',
+        templateUrl: 'partials/dashboard.html',
+        controller: 'DashboardCtrl',
+    })
+    when('/items', {
+        title: 'Items',
+        templateUrl: 'partials/items.html',
+        controller: 'ItemsCtrl',
+    })
+    when('/expr', {
+        title: 'Expression',
+        templateUrl: 'partials/expr.html',
+        controller: 'ExprCtrl',
+    })
+    when('/errors', {
+        title: 'Errors',
+        templateUrl: 'partials/errors.html',
+        controller: 'ErrorCtrl',
+    })
+    when('/graph', {
+        title: 'Graph',
+        templateUrl: 'partials/graph.html',
+        controller: 'GraphCtrl',
+    })
+    when('/host', {
+        title: 'Host View',
+        templateUrl: 'partials/host.html',
+        controller: 'HostCtrl',
+        reloadOnSearch: false,
+    })
+    when('/silence', {
+        title: 'Silence',
+        templateUrl: 'partials/silence.html',
+        controller: 'SilenceCtrl',
+    })
+    when('/config', {
+        title: 'Configuration',
+        templateUrl: 'partials/config.html',
+        controller: 'ConfigCtrl',
+        reloadOnSearch: false,
+    })
+    when('/action', {
+        title: 'Action',
+        templateUrl: 'partials/action.html',
+        controller: 'ActionCtrl',
+    })
+    when('/history', {
+        title: 'Alert History',
+        templateUrl: 'partials/history.html',
+        controller: 'HistoryCtrl',
+    })
+    when('/put', {
+        title: 'Data Entry',
+        templateUrl: 'partials/put.html',
+        controller: 'PutCtrl',
+    })
+    when('/annotation', {
+        title: 'Annotation',
+        templateUrl: 'partials/annotation.html',
+        controller: 'AnnotationCtrl',
+    })
+    when('/incident', {
+        title: 'Incident',
+        templateUrl: 'partials/incident.html',
+        controller: 'IncidentCtrl',
+    })
+    when('/tokens', {
+        title: 'Access Tokens',
+        template: `<token-list></token-list>`,
+    })
+    when('/tokens/new', {
+        title: 'New Access Token',
+        template: `<new-token></new-token>`,
+    })
+    $routeProvider.otherwise({
+        redirectTo: '/',
+    });
     $httpProvider.interceptors.push(function ($q) {
         return {
             'request': function (config) {
@@ -117,13 +126,13 @@ interface IRootScope extends ng.IScope {
 }
 
 interface IAuthService {
-    Init: (authEnabled: boolean,username: string, roles: RoleDefs, userPerms: number) => void;
+    Init: (authEnabled: boolean, username: string, roles: RoleDefs, userPerms: number) => void;
     HasPermission: (role: string) => boolean;
     GetRoles: () => RoleDefs;
     Username: (u: string) => string;
     GetUsername: () => string;
-    Enabled: ()=> boolean;
-    PermissionsFor: (bits: number) =>string[];
+    Enabled: () => boolean;
+    PermissionsFor: (bits: number) => string[];
     RoleFor: (bits: number) => string;
 }
 
@@ -148,8 +157,8 @@ interface IBosunScope extends RootScope {
     encode: (v: string) => string;
     panelClass: (v: string) => string;
     timeanddate: number[];
-    schedule: any;
-    req_from_m: (m: string) => Request;
+    req_from_m: (m: string) => GraphRequest;
+    schedule: StateGroups;
     refresh: (filter: string) => any;
     animate: () => any;
     stop: (all?: boolean) => any;
@@ -201,7 +210,7 @@ bosunControllers.controller('BosunCtrl', ['$scope', '$route', '$http', '$q', '$r
             return encodeURIComponent(v);
         };
         $scope.req_from_m = (m: string) => {
-            var r = new Request();
+            var r = new GraphRequest();
             var q = new Query(false);
             q.metric = m;
             r.queries.push(q);
@@ -236,7 +245,7 @@ bosunControllers.controller('BosunCtrl', ['$scope', '$route', '$http', '$q', '$r
 
             var p = $http.get('/api/alerts?filter=' + encodeURIComponent(filter || ""))
                 .success((data: any) => {
-                    $scope.schedule = data;
+                    $scope.schedule = new StateGroups(data);
                     $scope.timeanddate = data.TimeAndDate;
                     d.resolve();
                 })
@@ -246,7 +255,8 @@ bosunControllers.controller('BosunCtrl', ['$scope', '$route', '$http', '$q', '$r
             p.finally($scope.stop);
             return d.promise;
         };
-        var sz = 30;
+        // Size of the logo in (width and height) of the Bosun logo in the navbar
+        var sz = 25;
         var orig = 700;
         var light = '#4ba2d9';
         var dark = '#1f5296';
@@ -410,16 +420,12 @@ declare function escape(string: string): string;
 
 declare function unescape(string: string): string;
 
-interface Date {
-    toGMTString(): string;
-}
-
 function createCookie(name, value, days) {
     var expires;
     if (days) {
         var date = new Date();
         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        expires = "; expires=" + date.toGMTString();
+        expires = "; expires=" + date.toUTCString();
     } else {
         expires = "";
     }
@@ -471,40 +477,3 @@ bosunApp.filter('reverse', function () {
 });
 
 var timeFormat = 'YYYY-MM-DDTHH:mm:ssZ';
-
-class Annotation {
-    Id: string;
-    Message: string;
-    StartDate: string; // RFC3999
-    EndDate: string; // RFC3999
-    CreationUser: string;
-    Url: string;
-    Source: string;
-    Host: string;
-    Owner: string;
-    Category: string;
-    
-    constructor(a?, get?: boolean) {
-        a = a || {};
-        this.Id = a.Id || "";
-        this.Message = a.Message || "";
-        this.StartDate = a.StartDate || "";
-        this.EndDate = a.EndDate || "";
-        this.CreationUser = a.CreationUser || "";
-        this.Url = a.Url || "";
-        this.Source = a.Source || "bosun-ui";
-        this.Host = a.Host || "";
-        this.Owner = a.Owner || !get && getOwner() || "";
-        this.Category = a.Category || "";
-    }
-    setTimeUTC() {
-        var now = moment().utc().format(timeFormat)
-        this.StartDate = now;
-        this.EndDate = now;
-    }
-    setTime() {
-        var now = moment().format(timeFormat)
-        this.StartDate = now;
-        this.EndDate = now;
-    }
-}

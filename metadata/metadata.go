@@ -4,6 +4,8 @@ package metadata // import "github.com/leapar/bosun/metadata"
 import (
 	"bytes"
 	"encoding/json"
+	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -14,6 +16,12 @@ import (
 	"github.com/leapar/bosun/opentsdb"
 	"github.com/leapar/bosun/slog"
 	"github.com/leapar/bosun/util"
+)
+
+var (
+	// AuthToken is an optional string that sets the X-Access-Token HTTP header
+	// which is used to authenticate against Bosun
+	AuthToken string
 )
 
 // RateType is the type of rate for a metric: gauge, counter, or rate.
@@ -289,6 +297,9 @@ func postMetadata(ms []Metasend) {
 		return
 	}
 	req.Header.Set("Content-Type", "application/json")
+	if AuthToken != "" {
+		req.Header.Set("X-Access-Token", AuthToken)
+	}
 	client := http.DefaultClient
 	resp, err := client.Do(req)
 	if err != nil {
@@ -296,6 +307,8 @@ func postMetadata(ms []Metasend) {
 		return
 	}
 	defer resp.Body.Close()
+	// Drain up to 512 bytes and close the body to let the Transport reuse the connection
+	io.CopyN(ioutil.Discard, resp.Body, 512)
 	if resp.StatusCode != 204 {
 		slog.Errorln("bad metadata return:", resp.Status)
 		return

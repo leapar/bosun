@@ -10,10 +10,11 @@ import (
 	"github.com/leapar/bosun/metadata"
 	"github.com/leapar/bosun/opentsdb"
 	"github.com/leapar/bosun/util"
+	"time"
 )
 
 func init() {
-	collectors = append(collectors, &IntervalCollector{F: c_ntp_peers_unix})
+	collectors = append(collectors, &IntervalCollector{F: c_ntp_peers_unix, Interval: time.Minute})
 }
 
 var ntpNtpqPeerFields = []string{
