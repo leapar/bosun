@@ -28,7 +28,7 @@ bosunControllers.controller('ExprCtrl', ['$scope', '$http', '$location', '$route
 		current = '';
 	}
 	if (!current) {
-		$location.search('expr', btoa('avg(q("avg:rate:os.cpu{host=*bosun*}", "5m", "")) > 80'));
+		$location.search('expr', btoa('avg(q("avg:system.cpu.idle{host=*}", "5m", "")) > 80'));
 		return;
 	}
 	$scope.date = search.date || '';

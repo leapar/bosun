@@ -1,13 +1,6 @@
 cmd/bosun/dev.conf
-docs/.jekyll-metadata
-
-.idea/bosun.iml
 .idea/
-.idea/libraries/
 .gitignore
-
-.idea/workspace.xml
-
-.idea/libraries/Go_SDK.xml
-
-.idea/libraries/Go_SDK.xml
+docs/leapar/bosun/vendor/github.com/GROpenSourceDev/go-ntlm-auth/ntlm/index.html
+.docs/
+docs/

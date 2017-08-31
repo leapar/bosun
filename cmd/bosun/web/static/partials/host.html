@@ -18,7 +18,7 @@
 		</div>
 		<div class="row">
 			<div class="col-lg-6" ng-repeat="i in idata">
-				<h4>Network Bit/s: {{i[0].Tags.iface}}</h4>
+				<h4>Network Bit/s: {{i[0].Tags.device}}</h4>
 				<div class="chart" bytes="true" ts-graph data="i" generator="'area'"></div>
 			</div>
 		</div>

@@ -23,6 +23,9 @@ func UniqueMetrics(t miniprofiler.Timer, w http.ResponseWriter, r *http.Request)
 		}
 	}
 	uid := r.FormValue("uid")
+	if uid == "" {
+		uid = schedule.SystemConf.GetUid()
+	}
 	values, err := schedule.Search.UniqueMetrics(uid, epoch)
 	if err != nil {
 		return nil, err
@@ -44,6 +47,9 @@ func TagKeysByMetric(t miniprofiler.Timer, w http.ResponseWriter, r *http.Reques
 	vars := mux.Vars(r)
 	metric := vars["metric"]
 	uid := r.FormValue("uid")
+	if uid == "" {
+		uid = schedule.SystemConf.GetUid()
+	}
 	return schedule.Search.TagKeysByMetric(metric, uid)
 }
 
@@ -56,6 +62,9 @@ func TagValuesByMetricTagKey(t miniprofiler.Timer, w http.ResponseWriter, r *htt
 		return nil, err
 	}
 	uid := r.FormValue("uid")
+	if uid == "" {
+		uid = schedule.SystemConf.GetUid()
+	}
 	return schedule.Search.TagValuesByMetricTagKey(metric, tagk, uid, since)
 }
 
@@ -94,6 +103,9 @@ func FilteredTagsetsByMetric(t miniprofiler.Timer, w http.ResponseWriter, r *htt
 		}
 	}
 	uid := r.FormValue("uid")
+	if uid == "" {
+		uid = schedule.SystemConf.GetUid()
+	}
 	return schedule.Search.FilteredTagSets(metric, uid, tagset, since)
 }
 
@@ -106,6 +118,9 @@ func MetricsByTagPair(t miniprofiler.Timer, w http.ResponseWriter, r *http.Reque
 	tagk := vars["tagk"]
 	tagv := vars["tagv"]
 	uid := r.FormValue("uid")
+	if uid == "" {
+		uid = schedule.SystemConf.GetUid()
+	}
 	return schedule.Search.MetricsByTagPair(tagk, tagv, uid, since)
 }
 
@@ -117,6 +132,9 @@ func MetricsByTagKey(t miniprofiler.Timer, w http.ResponseWriter, r *http.Reques
 		return nil, err
 	}
 	uid := r.FormValue("uid")
+	if uid == "" {
+		uid = schedule.SystemConf.GetUid()
+	}
 	tagValues, err := schedule.Search.TagValuesByTagKey(tagk, uid, since)
 	if err != nil {
 		return nil, err
@@ -141,5 +159,8 @@ func TagValuesByTagKey(t miniprofiler.Timer, w http.ResponseWriter, r *http.Requ
 		return nil, err
 	}
 	uid := r.FormValue("uid")
+	if uid == "" {
+		uid = schedule.SystemConf.GetUid()
+	}
 	return schedule.Search.TagValuesByTagKey(tagk, uid, since)
 }

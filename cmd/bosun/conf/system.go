@@ -57,6 +57,7 @@ type SystemConf struct {
 	CommandHookPath string
 	RuleFilePath    string
 	md              toml.MetaData
+	Uid				string
 }
 
 // EnabledBackends stores which query backends supported by bosun are enabled
@@ -734,4 +735,8 @@ func parseESAnnoteConfig(sc *SystemConf) expr.ElasticConfig {
 
 	return esConf
 
+}
+
+func (sc *SystemConf) GetUid() string {
+	return sc.Uid
 }

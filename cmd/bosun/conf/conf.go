@@ -82,6 +82,8 @@ type SystemConfProvider interface {
 
 	MakeLink(string, *url.Values) string
 	EnabledBackends() EnabledBackends
+
+	GetUid() string
 }
 
 // ValidateSystemConf runs sanity checks on the system configuration

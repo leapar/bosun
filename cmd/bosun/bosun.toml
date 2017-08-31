@@ -2,7 +2,7 @@
 # may cause tests to fail
 
 # Hostname will be used when links are created in templates (i.e. acknowledge links)
-Hostname = "apmsys.com"
+Hostname = "127.0.0.1:8010"
 
 # The HTTP IP and Port to Listen on. Default is ":8070"
 HTTPListen = ":8010"
@@ -39,6 +39,8 @@ SearchSince = "72h"
 # Enable saving API endpoints and the ability to save the config via the UI. Default is false
 EnableSave = true
 
+Uid = "1"
+
 # Path to a command that will be executed on save of the rule configuration. This command is passed a filename, username, message, and vargs
 # If the command does not execute save operations will be canceled and the rule file will be restored
 #CommandHookPath = "/Users/kbrandt/src/hook/hook"
@@ -53,20 +55,48 @@ EnableSave = true
 
 # Configuration for to enable to Graphite Backend
 [GraphiteConf]
-	Host = "localhost:80"
+	Host = "localhost:8010"
 	[GraphiteConf.Headers]
 		X-Meow = "Mix"
 
 
 # Configuration of hosts to enable the Elastic backend
 [ElasticConf]
-	#Hosts = ["http://172.29.231.177:9200"]
+   [ElasticConf.default]
+        Hosts = ["http://172.29.231.70:9200"]
+
+        SimpleClient = false
+
+      [ElasticConf.default.ClientOptions]
+           Enabled = false
+           BasicAuthUsername = ""
+           BasicAuthPassword = ""
+           Scheme = ""
+           SnifferEnabled = false
+           SnifferTimeoutStartup = 0
+           HealthcheckEnabled = false
 
 # Configuration for embedding the annotate service (also enables annotations if hosts are defined)
 [AnnotateConf]
-    Hosts = ["http://172.29.231.177:9200"]
-    # Set the Index name that annotations are stored in. Default is annotate
-    # Index = annotate
+    Hosts = ["http://172.29.231.70:9200"]
+    # Set SimpleClient to true if ES running in standalone mode or in a restricted environment
+        # SimpleClient = true
+
+        # Set the Index name that annotations are stored in. Default is annotate
+        # Index = annotate
+        # [AnnotateConf.ClientOptions]
+                # Enabled = true
+                # BasicAuthUsername = "admin"
+                # BasicAuthPassword = "password"
+
+                # Default http only support https
+                # Scheme = "https"
+
+                # Default enable
+                # SnifferEnabled = false
+
+                # Default enable
+                # HealthcheckEnabled = false
 
 # Configuration for Bosun's internal storage. Can be Ledis (Default) or Redis. Redis is recommended
 # for production setups. Defaults for ledis are below but would be ignored since redis takes
@@ -79,8 +109,10 @@ EnableSave = true
 
 # Configuration to enable Bosun to be able to send email notifications
 [SMTPConf]
-	EmailFrom = "bosun@example.com"
-	Host = "mail.example.com"
+	EmailFrom = "2@qq.com"
+	Host = "smtp.qq.com:25"
+    Username = "9395462@qq.com"
+    Password = "..........."
 
 # Configuration to enable the InfluxDB backend
 [InfluxConf]

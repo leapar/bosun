@@ -57,8 +57,10 @@ bosunControllers.controller('HostCtrl', ['$scope', '$http', '$location', '$route
 	cpu_r.start = $scope.time;
 	cpu_r.queries = [
 		new Query(false, {
-			metric: 'os.cpu',
-			derivative: 'counter',
+			aggregator: 'avg',
+			rate: false,
+			metric: 'system.cpu.idle',
+			derivative: 'gauge',
 			tags: { host: $scope.host },
 		})
 	];
@@ -73,11 +75,13 @@ bosunControllers.controller('HostCtrl', ['$scope', '$http', '$location', '$route
 	var mem_r = new GraphRequest();
 	mem_r.start = $scope.time;
 	mem_r.queries.push(new Query(false, {
-		metric: "os.mem.total",
+		metric: "system.mem.total",
+		derivative: 'gauge',
 		tags: { host: $scope.host },
 	}));
 	mem_r.queries.push(new Query(false, {
-		metric: "os.mem.used",
+		metric: "system.mem.free",
+		derivative: 'gauge',
 		tags: { host: $scope.host },
 	}));
 	$http.get('/api/graph?' + 'json=' + encodeURIComponent(JSON.stringify(mem_r)) + autods)
@@ -93,10 +97,10 @@ bosunControllers.controller('HostCtrl', ['$scope', '$http', '$location', '$route
 	net_bytes_r.start = $scope.time;
 	net_bytes_r.queries = [
 		new Query(false, {
-			metric: "os.net.bytes",
+			metric: "system.net.bytes_rcvd",
 			rate: true,
 			rateOptions: { counter: true, resetValue: 1 },
-			tags: { host: $scope.host, iface: "*", direction: "*" },
+			tags: { host: $scope.host, device: "*" },
 		})
 	];
 	$http.get('/api/graph?' + 'json=' + encodeURIComponent(JSON.stringify(net_bytes_r)) + autods)
@@ -111,11 +115,11 @@ bosunControllers.controller('HostCtrl', ['$scope', '$http', '$location', '$route
 					if (series.Tags.direction == "out") {
 						 series.Data = series.Data.map((dp: any) => { return [dp[0], dp[1] * -1]; });
 					}
-					if (!ifaceSeries.hasOwnProperty(series.Tags.iface)) {
-						 ifaceSeries[series.Tags.iface] = [series];
+					if (!ifaceSeries.hasOwnProperty(series.Tags.device)) {
+						 ifaceSeries[series.Tags.device] = [series];
+						tmp.push(ifaceSeries[series.Tags.device]);
 					} else {
-						 ifaceSeries[series.Tags.iface].push(series);
-						 tmp.push(ifaceSeries[series.Tags.iface]);
+						 ifaceSeries[series.Tags.device].push(series);
 					}
 			});
 			$scope.idata = tmp;
@@ -124,12 +128,12 @@ bosunControllers.controller('HostCtrl', ['$scope', '$http', '$location', '$route
 	fs_r.start = $scope.time
 	fs_r.queries = [
 		new Query(false, {
-			metric: "os.disk.fs.space_total",
-			tags: { host: $scope.host, disk: "*"},
+			metric: "system.disk.total",
+			tags: { host: $scope.host, device: "*"},
 		}),
 		new Query(false, {
-			metric: "os.disk.fs.space_used",
-			tags: { host: $scope.host, disk: "*"},
+			metric: "system.disk.used",
+			tags: { host: $scope.host, device: "*"},
 		})
 	];
 	$http.get('/api/graph?' + 'json=' + encodeURIComponent(JSON.stringify(fs_r)) + autods)
@@ -142,18 +146,19 @@ bosunControllers.controller('HostCtrl', ['$scope', '$http', '$location', '$route
 			angular.forEach(data.Series, function(series, idx) {
 				var stat = series.Data[series.Data.length-1][1];
 				var prop = "";
-				if (series.Metric == "os.disk.fs.space_total") {
+				if (series.Metric == "system.disk.total") {
 					prop = "total";
 				} else {
 					prop = "used";
 				}
-				if (!fsSeries.hasOwnProperty(series.Tags.disk)) {
-					 fsSeries[series.Tags.disk] = [series];
-					 fsSeries[series.Tags.disk][prop] = stat;
+				if (!fsSeries.hasOwnProperty(series.Tags.device)) {
+					 fsSeries[series.Tags.device] = [series];
+					 fsSeries[series.Tags.device][prop] = stat;
+					tmp.push(fsSeries[series.Tags.device]);
 				} else {
-					 fsSeries[series.Tags.disk].push(series);
-					 fsSeries[series.Tags.disk][prop] = stat;
-					 tmp.push(fsSeries[series.Tags.disk]);
+					 fsSeries[series.Tags.device].push(series);
+					 fsSeries[series.Tags.device][prop] = stat;
+
 				}
 			});
 			$scope.fsdata = tmp;
