@@ -1,6 +1,4 @@
 cmd/bosun/dev.conf
 .idea/
 .gitignore
-docs/leapar/bosun/vendor/github.com/GROpenSourceDev/go-ntlm-auth/ntlm/index.html
-.docs/
 docs/

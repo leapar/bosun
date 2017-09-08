@@ -436,6 +436,36 @@ var defaultFuncs = ttemplate.FuncMap{
 		}
 		return &d
 	},
+	"parseTag": func(s string, quota bool) string {
+		ts, err := opentsdb.ParseTags(s)
+		if err != nil {
+			return "[]"
+		}
+		var ret string = "["
+		for k, v := range ts {
+			ret += "{"
+			if quota {
+				ret += "\""
+			}
+			ret += k
+			if quota {
+				ret += "\""
+			}
+			ret += ":"
+			if quota {
+				ret += "\""
+			}
+			ret += v
+			if quota {
+				ret += "\""
+			}
+			ret += "},"
+		}
+
+		ret = ret[0:len(ret)-1]
+		ret += "]"
+		return  ret
+	},
 }
 
 func (c *Conf) loadTemplate(s *parse.SectionNode) {
