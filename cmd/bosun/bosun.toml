@@ -9,7 +9,7 @@ HTTPListen = ":8010"
 
 # Alert checks are run by default every CheckFrequency * DefaultRunEvery. RunEvery can be overridden
 # by indivdual alerts. Defaults are "5m" and 1
-CheckFrequency = "1m"
+CheckFrequency = "1s"
 DefaultRunEvery = 5
 
 # Path to the rule file (file that contains definitions for alerts, macros, lookups, templates, and notifications)
@@ -109,10 +109,10 @@ Uid = "1"
 
 # Configuration to enable Bosun to be able to send email notifications
 [SMTPConf]
-	EmailFrom = "2@qq.com"
+	EmailFrom = "9395462@qq.com"
 	Host = "smtp.qq.com:25"
     Username = "9395462@qq.com"
-    Password = "..........."
+    Password = "fqazjqfknzficaci"
 
 # Configuration to enable the InfluxDB backend
 [InfluxConf]

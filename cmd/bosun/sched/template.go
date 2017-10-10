@@ -53,14 +53,16 @@ type unknownContext struct {
 	Group models.AlertKeys
 
 	schedule *Schedule
+	Alert *conf.Alert
 }
 
-func (s *Schedule) unknownData(t time.Time, name string, group models.AlertKeys) *unknownContext {
+func (s *Schedule) unknownData(t time.Time, name string, group models.AlertKeys, alert *conf.Alert) *unknownContext {
 	return &unknownContext{
 		Time:     t,
 		Group:    group,
 		Name:     name,
 		schedule: s,
+		Alert:	  alert,
 	}
 }
 

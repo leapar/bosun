@@ -43,6 +43,7 @@ func (s *Schedule) dispatchNotifications() {
 type IncidentWithTemplates struct {
 	*models.IncidentState
 	*models.RenderedTemplates
+	*conf.Alert
 }
 
 // Notify puts a rendered notification in the schedule's pendingNotifications queue
@@ -145,7 +146,8 @@ func (s *Schedule) sendNotifications(silenced SilenceTester) {
 					slog.Infoln("silencing unknown", ak)
 					continue
 				}
-				s.pendingUnknowns[n] = append(s.pendingUnknowns[n], st.IncidentState)
+				st.Alert = alert
+				s.pendingUnknowns[n] = append(s.pendingUnknowns[n], st)
 			} else if silenced {
 				slog.Infof("silencing %s", ak)
 				continue
@@ -173,8 +175,10 @@ func (s *Schedule) sendUnknownNotifications() {
 	defer slog.Info("Done sending unknown notifications")
 	for n, states := range s.pendingUnknowns {
 		ustates := make(States)
+		var alert *conf.Alert
 		for _, st := range states {
-			ustates[st.AlertKey] = st
+			ustates[st.AlertKey] = st.IncidentState
+			alert = st.Alert
 		}
 		var c int
 		tHit := false
@@ -185,20 +189,20 @@ func (s *Schedule) sendUnknownNotifications() {
 			if c >= s.SystemConf.GetUnknownThreshold() && s.SystemConf.GetUnknownThreshold() > 0 {
 				if !tHit && len(groupSets) == 0 {
 					// If the threshold is hit but only 1 email remains, just send the normal unknown
-					s.unotify(name, group, n)
+					s.unotify(name, group, n, alert)
 					break
 				}
 				tHit = true
 				oTSets[name] = group
 			} else {
-				s.unotify(name, group, n)
+				s.unotify(name, group, n, alert)
 			}
 		}
 		if len(oTSets) > 0 {
 			s.utnotify(oTSets, n)
 		}
 	}
-	s.pendingUnknowns = make(map[*conf.Notification][]*models.IncidentState)
+	s.pendingUnknowns = make(map[*conf.Notification][]*IncidentWithTemplates)
 }
 
 var unknownMultiGroup = ttemplate.Must(ttemplate.New("unknownMultiGroup").Parse(`
@@ -267,7 +271,7 @@ var defaultUnknownTemplate = &conf.Template{
 
 // unotify builds an unknown notification for an alertkey or a group of alert keys. It renders the template
 // and calls the notification's Notify method to trigger the action.
-func (s *Schedule) unotify(name string, group models.AlertKeys, n *conf.Notification) {
+func (s *Schedule) unotify(name string, group models.AlertKeys, n *conf.Notification, alert* conf.Alert) {
 	subject := new(bytes.Buffer)
 	body := new(bytes.Buffer)
 	now := utcNow()
@@ -276,7 +280,7 @@ func (s *Schedule) unotify(name string, group models.AlertKeys, n *conf.Notifica
 	if t == nil {
 		t = defaultUnknownTemplate
 	}
-	data := s.unknownData(now, name, group)
+	data := s.unknownData(now, name, group, alert)
 	if t.Body != nil {
 		if err := t.Body.Execute(body, &data); err != nil {
 			slog.Infoln("unknown template error:", err)

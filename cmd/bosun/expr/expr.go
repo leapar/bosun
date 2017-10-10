@@ -110,6 +110,7 @@ func (e *Expr) Execute(backends *Backends, providers *BosunProviders, T miniprof
 		unjoinedOk:     unjoinedOk,
 		Backends:       backends,
 		BosunProviders: providers,
+		enableComputations: true,
 	}
 	return e.ExecuteState(s, T)
 }
